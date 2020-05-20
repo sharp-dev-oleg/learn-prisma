@@ -1,4 +1,48 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src"
+  "sourceRoot": "apps/pw-application/src",
+  "monorepo": true,
+  "root": "apps/pw-application",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/pw-application/tsconfig.app.json"
+  },
+  "projects": {
+    "pwmicro-service": {
+      "type": "application",
+      "root": "apps/pwmicro-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/pwmicro-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/pwmicro-service/tsconfig.app.json"
+      }
+    },
+    "auth-micro-service": {
+      "type": "application",
+      "root": "apps/auth-micro-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth-micro-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth-micro-service/tsconfig.app.json"
+      }
+    },
+    "pw-application": {
+      "type": "application",
+      "root": "apps/pw-application",
+      "entryFile": "main",
+      "sourceRoot": "apps/pw-application/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/pw-application/tsconfig.app.json"
+      }
+    },
+    "user-micro-service": {
+      "type": "application",
+      "root": "apps/user-micro-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/user-micro-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/user-micro-service/tsconfig.app.json"
+      }
+    }
+  }
 }
