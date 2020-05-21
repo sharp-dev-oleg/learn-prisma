@@ -1,17 +1,44 @@
-import { UserModel } from './user.model';
-import { IUser } from './user.interface';
-import { Injectable } from '@nestjs/common';
+import { Wailet } from './../../../libs/database/src/models/Wailet';
+
+import { IUser } from 'libs/database/src/models/user.interface';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, InsertResult } from 'typeorm';
+import { UserModel } from 'libs/database/src/models/user.model';
 
 @Injectable()
 export class UserService {
-  constructor(  @InjectRepository(UserModel)
-  private usersRepository: Repository<UserModel>){
-    
-  }
+  constructor(
+    @InjectRepository(UserModel)
+    private userRepository: Repository<UserModel>,
+    @InjectRepository(Wailet)
+    private wailetRepository: Repository<Wailet>,
+  ) {}
 
   async getByUsername(data): Promise<IUser> {
-    return await this.usersRepository.findOne({ username: data.username });
+    return await this.userRepository.findOne({ username: data.username });
+  }
+
+  async createUser(user: IUser): Promise<InsertResult> {
+    try {
+      const userEntity = this.userRepository.create(user);
+
+      const res = await this.userRepository.insert(userEntity);
+
+      const wailetEntity = this.wailetRepository.create({
+        name: 'wailetPW',
+        balance: 500,
+        userId: userEntity.id,
+      });
+
+      await this.wailetRepository.insert(wailetEntity);
+
+      Logger.log('createUser - Created user');
+
+      return res;
+    } catch (e) {
+      Logger.log(e);
+      throw e;
+    }
   }
 }

@@ -5,6 +5,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { jwtConstants } from './constants';
 
 @Module({
   imports: [
@@ -16,8 +17,9 @@ import { JwtStrategy } from './jwt.strategy';
       port: 3003,
     }
   }]), 
-  JwtModule.register({
-    secret: 'yoursecret' //todo: getting from config
+   JwtModule.register({
+    secret: jwtConstants.secret,
+    signOptions: { expiresIn: '60s' }
   })],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController]

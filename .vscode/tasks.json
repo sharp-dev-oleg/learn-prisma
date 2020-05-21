@@ -7,6 +7,25 @@
 			"problemMatcher": [],
 			"label": "npm: start",
 			"detail": "nest start"
+		},
+		{
+			"type": "shell",
+			"command":"nest start auth-micro-service",
+			"label": "start auth",
+			"detail": "nest auth start"
+		},
+		{
+			"type": "shell",
+			"command":"nest start user-micro-service",
+			"label": "start user",
+			"detail": "nest auth start"
+		},
+		{
+			"type": "shell",
+			"command":"nest start pwmicro-service",
+			"label": "start pw",
+			"detail": "nest auth start"
 		}
+
 	]
 }

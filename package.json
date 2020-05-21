@@ -30,6 +30,7 @@
     "@nestjs/typeorm": "^7.0.0",
     "bcrypt": "^4.0.1",
     "class-validator": "^0.12.2",
+    "mssql": "^6.2.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -81,7 +82,12 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
-    ]
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "@app/database/(.*)": "<rootDir>/libs/database/src/$1",
+      "@app/database": "<rootDir>/libs/database/src"
+    }
   }
 }

@@ -15,15 +15,48 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Auth-MS",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\start",
-            "preLaunchTask": "npm: start",
+            "preLaunchTask": "start auth",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch User-MS",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\start",
+            "preLaunchTask": "start user",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch PW-MS",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\start",
+            "preLaunchTask": "start pw",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ]
+        },
+
+    ],
+    "compounds": [
+        {
+           "name": "Start ParrotWings",
+          "configurations": ["Launch PW-MS", "Launch User-MS", "Launch Auth-MS", "Launch Chrome"]
         }
     ]
 }

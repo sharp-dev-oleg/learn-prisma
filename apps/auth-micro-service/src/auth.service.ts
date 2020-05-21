@@ -48,4 +48,8 @@ export class AuthService {
   validateToken(jwt: string) {
     return this.jwtService.verify(jwt);
   }
+
+  getUserData(jwt: string) {
+    return this.jwtService.decode(jwt);
+  }
 }
