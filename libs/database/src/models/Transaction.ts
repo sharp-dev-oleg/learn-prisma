@@ -8,10 +8,10 @@ export class Transaction{
     @Column()
     status: string;
     @Column()
-    anount: number;
-    @Column()
+    amount: number;
+    @Column({name:'from_wailet_id'})
     fromWailetId: number;
-    @Column()
+    @Column({name:'to_wailet_id'})
     toWailetId: number;
     
 

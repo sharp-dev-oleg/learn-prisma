@@ -5,12 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
+            "type": "node",
             "request": "launch",
-            "name": "Launch Chrome",
-            "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}",
-            "preLaunchTask": "npm: start"
+            "name": "Launch Main",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\start",
+            "preLaunchTask": "npm: start",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ]
         },
         {
             "type": "node",
@@ -56,7 +61,7 @@
     "compounds": [
         {
            "name": "Start ParrotWings",
-          "configurations": ["Launch PW-MS", "Launch User-MS", "Launch Auth-MS", "Launch Chrome"]
+          "configurations": ["Launch PW-MS", "Launch User-MS", "Launch Auth-MS", "Launch Main"]
         }
     ]
 }

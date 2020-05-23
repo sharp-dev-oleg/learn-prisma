@@ -4,17 +4,16 @@ import { TimeoutError, throwError } from 'rxjs';
 import {timeout,catchError} from 'rxjs/operators'
 
 @Injectable()
-export class AppService {
+export class PwService {
   
   constructor(
-  @Inject('USER_CLIENT')
-  private readonly userClient: ClientProxy,
-  @Inject('AUTH_CLIENT')
-  private readonly authClient: ClientProxy
+  @Inject('PW_CLIENT')
+  private readonly client: ClientProxy,
   ) {}
 
- async registration(data) {
-    return await this.userClient.send({ role: 'user', cmd: 'create' }, data)
+ async getTransaction(userId) {
+   Logger.log('getTransaction');
+    return await this.client.send({ role: 'PW', cmd: 'recent' }, userId)
       .pipe(
         timeout(5000), 
         catchError(err => {
@@ -27,8 +26,9 @@ export class AppService {
       .toPromise();
   }
 
-  async login(data) {
-    return await this.authClient.send({ role: 'auth', cmd: 'signin'}, data)
+
+  async getWailets(userId) {
+    return await this.client.send({ role: 'PW', cmd: 'wailets' }, userId)
       .pipe(
         timeout(5000), 
         catchError(err => {
@@ -41,8 +41,8 @@ export class AppService {
       .toPromise();
   }
 
-  async getUserData(jwt: string) {
-    const {user:{id,username},exp} = await this.authClient.send({ role: 'auth', cmd: 'get'}, {jwt})
+  async sendTransaction(data) {
+    return await this.client.send({ role: 'PW', cmd: 'transaction' }, data)
       .pipe(
         timeout(5000), 
         catchError(err => {
@@ -53,8 +53,8 @@ export class AppService {
         return throwError(err);
       }))
       .toPromise();
-
-      return {id,username,exp};
   }
+
+
 
 }

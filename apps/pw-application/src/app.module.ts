@@ -1,7 +1,10 @@
+
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AuthController } from './controllers/auth.controller';
+import { AuthService } from './services/auth.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PwService } from './services/pw.service';
+import { PWController } from './controllers/pw.controller';
 
 @Module({
   imports: [ClientsModule.register([{
@@ -19,8 +22,16 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       host: 'localhost',
       port: 3003,
     }
+  }]),
+  ClientsModule.register([{
+    name: 'PW_CLIENT',
+    transport: Transport.TCP,
+    options: {
+      host: 'localhost',
+      port: 3004,
+    }
   }])],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AuthController, PWController],
+  providers: [AuthService, PwService],
 })
 export class AppModule {}

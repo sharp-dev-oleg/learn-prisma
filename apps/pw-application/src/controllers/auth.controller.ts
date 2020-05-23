@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body,Request } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Post, Body, Request, Logger, UseGuards } from '@nestjs/common';
+import { AuthService } from '../services/auth.service';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class AuthController {
+  constructor(private readonly appService: AuthService) {}
 
   @Post('/registration')
   registration(@Body() user) {
@@ -15,8 +16,10 @@ export class AppController {
     return this.appService.login(user);
   }
 
+  @UseGuards(AuthGuard)
   @Get('/userdata')
   user(@Request() req) {
+    
     return this.appService.getUserData(req.headers['authorization']?.split(' ')[1]);
   }
 }

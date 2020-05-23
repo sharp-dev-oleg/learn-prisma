@@ -9,7 +9,7 @@ export class Wailet{
     name: string;
     @Column()
     balance: number;
-    @Column()
+    @Column({name:'user_id'})
     userId: number;
     
 }
