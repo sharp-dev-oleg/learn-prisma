@@ -49,7 +49,7 @@ export class PWService {
         });
         for (const transaction of transactions) {
           transaction.status = 'PENDING';
-          await this.transactionRepository.save(transaction);
+          await tmanager.save(transaction);
           const fromWailet = await this.wailetRepository.findOne({
             id: transaction.fromWailetId,
           });
@@ -57,19 +57,19 @@ export class PWService {
             id: transaction.toWailetId,
           });
 
-          if (fromWailet.balance < transaction.amount) {
+          if (fromWailet.balance < transaction.amount ) {
             transaction.status = 'FAILED';
             await tmanager.save(transaction);
-            throw new NotInufMoneyError();
+          } else {
+            this.wailetRepository.manager.transaction(async wmanager => {
+              fromWailet.balance -= transaction.amount;
+              toWailet.balance += transaction.amount;
+              wmanager.save(fromWailet);
+              wmanager.save(toWailet);
+            });
+            transaction.status = 'COMPLETE';
+            await tmanager.save(transaction);
           }
-          this.wailetRepository.manager.transaction(async wmanager => {
-            fromWailet.balance -= transaction.amount;
-            toWailet.balance += transaction.amount;
-            wmanager.save(fromWailet);
-            wmanager.save(toWailet);
-          });
-          transaction.status = 'COMPLETE';
-          await tmanager.save(transaction);
         }
       });
     } catch (err) {
