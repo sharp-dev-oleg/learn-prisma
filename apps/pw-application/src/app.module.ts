@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 
 import { Module } from '@nestjs/common';
 import { AuthController } from './controllers/auth.controller';
@@ -7,28 +8,30 @@ import { PwService } from './services/pw.service';
 import { PWController } from './controllers/pw.controller';
 
 @Module({
-  imports: [ClientsModule.register([{
+  imports: [
+  ConfigModule,
+  ClientsModule.register([{
     name: 'AUTH_CLIENT',
     transport: Transport.TCP,
     options: {
-      host: 'localhost',
-      port: 3002,
+      host: process.env.AUTH_MICRO_SERVICE_HOST || 'localhost',
+      port: parseInt(process.env.AUTH_MICRO_SERVICE_PORT) || 3002,
     }
-  }]),
-  ClientsModule.register([{
+  }, 
+  {
     name: 'USER_CLIENT',
     transport: Transport.TCP,
     options: {
-      host: 'localhost',
-      port: 3003,
+      host: process.env.USER_MICRO_SERVICE_HOST || 'localhost',
+      port: parseInt(process.env.USER_MICRO_SERVICE_PORT) || 3003,
     }
-  }]),
-  ClientsModule.register([{
+  },
+  {
     name: 'PW_CLIENT',
     transport: Transport.TCP,
     options: {
-      host: 'localhost',
-      port: 3004,
+      host: process.env.PW_MICRO_SERVICE_HOST || 'localhost',
+      port: parseInt(process.env.PW_MICRO_SERVICE_PORT) || 3004,
     }
   }])],
   controllers: [AuthController, PWController],

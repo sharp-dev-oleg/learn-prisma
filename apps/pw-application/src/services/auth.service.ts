@@ -28,6 +28,7 @@ export class AuthService {
   }
 
   async login(data) {
+    console.log(this.authClient);
     return await this.authClient.send({ role: 'auth', cmd: 'signin'}, data)
       .pipe(
         timeout(5000), 

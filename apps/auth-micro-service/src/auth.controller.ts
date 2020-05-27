@@ -1,11 +1,11 @@
-import { IUser } from './../../../libs/database/src/models/user.interface';
-import { Controller, UseGuards, Post,Request, Logger } from '@nestjs/common';
+import { IUser } from 'libs/database/src/models/user.interface';
+import { Controller, Logger } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './local-auth.guard';
 import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class AuthController {
+  
   constructor(private readonly authService: AuthService) {}
 
  

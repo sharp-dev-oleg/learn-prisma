@@ -5,23 +5,31 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
-import { jwtConstants } from './constants';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({envFilePath:'.env'}),
+    JwtModule.registerAsync({
+      imports: [ConfigModule.forRoot({envFilePath:'.env'})],
+      useFactory: async (  configService: ConfigService) =>{ 
+        console.log({secret: configService.get<string>('SICRET_KEY')})
+        return ({
+        secret: configService.get<string>('SICRET_KEY'),
+        signOptions: { expiresIn: '6000s' }
+      });},
+      inject: [ConfigService],
+    }),
+    
     ClientsModule.register([{
     name: 'USER_CLIENT',
     transport: Transport.TCP,
     options: {
-      host: 'localhost',
-      port: 3003,
+      host: process.env.USER_MICRO_SERVICE_HOST || 'localhost',
+      port: parseInt(process.env.USER_MICRO_SERVICE_PORT) || 3003,
     }
-  }]), 
-   JwtModule.register({
-    secret: jwtConstants.secret,
-    signOptions: { expiresIn: '6000s' }
-  })],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  }])],
+  providers: [ConfigService,AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController]
   
 })

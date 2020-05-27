@@ -8,8 +8,8 @@ async function bootstrap() {
     {
       transport: Transport.TCP,
       options:{
-        host:'localhost',
-        port:3004
+        host :process.env.PW_MICRO_SERVICE_HOST || 'localhost',
+        port: parseInt(process.env.PW_MICRO_SERVICE_PORT) || 3004
       }
     }
      
