@@ -31,7 +31,7 @@ export class AuthController {
   }
 
   @MessagePattern({ role: 'auth', cmd: 'get'})
-  getUserData(data){
+  getUserData(data): any{
     try {
       const res = this.authService.getUserData(data.jwt);
 

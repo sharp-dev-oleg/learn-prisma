@@ -1,13 +1,14 @@
-import { Wailet } from './../../../libs/database/src/models/Wailet';
+import { Wailet } from '../../../libs/database/src/models/Wailet';
 
 import { IUser } from 'libs/database/src/models/user.interface';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, InsertResult } from 'typeorm';
-import { UserModel } from 'libs/database/src/models/user.model';
+import { UserModel } from '../../../libs/database/src/models/user.model';
 
 @Injectable()
 export class UserService {
+ 
   constructor(
     @InjectRepository(UserModel)
     private userRepository: Repository<UserModel>,
@@ -17,6 +18,13 @@ export class UserService {
 
   async getByUsername(data): Promise<IUser> {
     return await this.userRepository.findOne({ username: data.username });
+  }
+
+  async search(query: string): Promise<IUser[]> {
+    
+    const result = await this.userRepository.find({where:`username LIKE '${query}%'`});
+
+    return result.map(({id,username})=>({id,username}));
   }
 
   async createUser(user: IUser): Promise<InsertResult> {

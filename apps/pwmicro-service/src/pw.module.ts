@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PWController } from './pw.controller';
 import { PWService } from './pw.service';
-import { DatabaseModule } from 'libs/database/src';
+import { DatabaseModule } from '../../../libs/database/src/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 

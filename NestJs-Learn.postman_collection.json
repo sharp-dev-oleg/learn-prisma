@@ -75,6 +75,40 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "search",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6ImZyZXNoZWt0IiwicGFzc3dvcmQiOiIkMmIkMTAkN3dvajI5ZklDUEJ2RHdIZUNRRWJIT3pKZXZaaUQ3ZmNlbndyNXBqaTllcmUvRy5YVU5vUy4ifSwic3ViIjoxLCJpYXQiOjE1OTA2NTU3NjcsImV4cCI6MTU5MDcxNTc2N30.ffImfkIiTL0O4RbmZGn3In5lbnZsGMQiq2Q6MG7AXzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/search?q=fr",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "fr"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

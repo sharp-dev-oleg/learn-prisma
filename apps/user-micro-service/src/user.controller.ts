@@ -11,6 +11,12 @@ export class UserController {
     return await this.service.getByUsername(data);
   }
 
+
+  @MessagePattern({ role: 'user', cmd: 'search' })
+  async search(query){
+    return await this.service.search(query);
+  }
+
   @MessagePattern({ role: 'user', cmd: 'create' })
   async createUser(data){
     Logger.log('create',data)

@@ -4,22 +4,21 @@ import { AuthGuard } from '../guards/auth.guard';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly appService: AuthService) {}
+  constructor(private readonly service: AuthService) {}
 
   @Post('/registration')
   registration(@Body() user) {
-    return this.appService.registration(user);
+    return this.service.registration(user);
   }
 
   @Post('/login')
   login(@Body() user) {
-    return this.appService.login(user);
+    return this.service.login(user);
   }
 
   @UseGuards(AuthGuard)
   @Get('/userdata')
   user(@Request() req) {
-    
-    return this.appService.getUserData(req.headers['authorization']?.split(' ')[1]);
+    return this.service.getUserData(req.headers['authorization']?.split(' ')[1]);
   }
 }

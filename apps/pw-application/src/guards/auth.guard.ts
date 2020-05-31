@@ -1,7 +1,6 @@
 import { CanActivate, Inject, ExecutionContext, Logger } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import {timeout, catchError} from 'rxjs/operators'
-import { GqlExecutionContext } from '@nestjs/graphql';
+import {timeout} from 'rxjs/operators'
 
 export class AuthGuard implements CanActivate {
     constructor(

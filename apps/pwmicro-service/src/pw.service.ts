@@ -1,9 +1,8 @@
-import { NotInufMoneyError } from './errors/NotInufMoneyError';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Wailet } from 'libs/database/src/models/Wailet';
-import { Transaction } from 'libs/database/src/models/Transaction';
+import { Wailet } from '../../../libs/database/src/models/Wailet';
+import { Transaction } from '../../../libs/database/src/models/Transaction';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()

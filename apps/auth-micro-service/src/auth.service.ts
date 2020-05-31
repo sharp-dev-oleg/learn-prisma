@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService) {}
 
   async validateUser(username: string, password: string): Promise<any> {
-    console.log(this.client);
+    
     try {
       const user = await this.client.send({ role: 'user', cmd: 'get' }, { username })
       .pipe(
@@ -39,7 +39,6 @@ export class AuthService {
 
   async login(user) {
     const payload = { user, sub: user.id};
-    console.log(this.jwtService);
     return {
       userId: user.id,
       accessToken: this.jwtService.sign(payload)
@@ -51,6 +50,11 @@ export class AuthService {
   }
 
   getUserData(jwt: string) {
-    return this.jwtService.decode(jwt);
+    const {
+      user: { id, username },
+      exp,
+    } = this.jwtService.decode(jwt) as any;
+
+    return { id, username, exp};
   }
 }
