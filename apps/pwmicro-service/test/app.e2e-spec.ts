@@ -2,7 +2,7 @@ import { Transport } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PWModule } from '../src/pw.module';
 import { PWService } from '../src/pw.service';
-
+import {SchedulerRegistry} from '@nestjs/schedule';
 describe('AppController (e2e)', () => {
   let app;
   let pwService: PWService;
@@ -11,6 +11,8 @@ describe('AppController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [PWModule],
     }).compile();
+    const jobsSheduler = moduleFixture.get<SchedulerRegistry>(SchedulerRegistry);
+    jobsSheduler.getCronJobs().forEach(job => job.stop());
 
     app = moduleFixture.createNestMicroservice({
       transport: Transport.TCP,
@@ -19,6 +21,7 @@ describe('AppController (e2e)', () => {
         port: parseInt(process.env.PW_MICRO_SERVICE_PORT) || 3004
       }
     });
+    
     pwService = moduleFixture.get<PWService>(PWService);
     await app.init();
      

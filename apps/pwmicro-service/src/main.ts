@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { PWModule } from './pw.module';
+import { PWService } from './pw.service';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -14,6 +15,10 @@ async function bootstrap() {
     }
      
   );
-  app.listen(() => console.log('PWMicroService is listening'));
+  app.listen(() =>{ 
+    console.log('PWMicroService is listening')
+    const pwService = app.get<PWService>(PWService);
+    pwService.addCronJob();
+  });
 }
 bootstrap();

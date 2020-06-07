@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Wailet } from '../../../libs/database/src/models/Wailet';
 import { Transaction } from '../../../libs/database/src/models/Transaction';
-import { Cron, CronExpression } from '@nestjs/schedule';
-
+import { Cron, CronExpression,SchedulerRegistry } from '@nestjs/schedule';
+import { CronJob } from 'cron';
 @Injectable()
 export class PWService {
   constructor(
@@ -12,6 +12,7 @@ export class PWService {
     private transactionRepository: Repository<Transaction>,
     @InjectRepository(Wailet)
     private wailetRepository: Repository<Wailet>,
+    private scheduler:SchedulerRegistry
   ) {}
 
   async getTransactions(userId: number) {
@@ -38,8 +39,14 @@ export class PWService {
     const entity = this.transactionRepository.create(transaction);
     await this.transactionRepository.insert(entity);
   }
+  
+  addCronJob(){
+     const job = new CronJob(CronExpression.EVERY_MINUTE,()=>this.process());
+     this.scheduler.addCronJob('pw-proccess', job);
+     job.start();
+  }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  //@Cron(CronExpression.EVERY_MINUTE)
   async process() {
     try {
       this.transactionRepository.manager.transaction(async tmanager => {
