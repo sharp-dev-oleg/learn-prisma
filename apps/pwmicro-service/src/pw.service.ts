@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, EntityManager } from 'typeorm';
 import { Wailet } from '../../../libs/database/src/models/Wailet';
 import { Transaction } from '../../../libs/database/src/models/Transaction';
 import { Cron, CronExpression,SchedulerRegistry } from '@nestjs/schedule';
@@ -49,7 +49,7 @@ export class PWService {
   //@Cron(CronExpression.EVERY_MINUTE)
   async process() {
     try {
-      this.transactionRepository.manager.transaction(async tmanager => {
+   await this.transactionRepository.manager.transaction(async tmanager => {
         const transactions = await tmanager.find(Transaction, {
           status: 'NEW',
         });
@@ -67,7 +67,7 @@ export class PWService {
             transaction.status = 'FAILED';
             await tmanager.save(transaction);
           } else {
-            this.wailetRepository.manager.transaction(async wmanager => {
+          await this.wailetRepository.manager.transaction(async (wmanager:EntityManager) => {
               fromWailet.balance -= transaction.amount;
               toWailet.balance += transaction.amount;
               wmanager.save(fromWailet);
