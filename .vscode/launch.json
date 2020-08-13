@@ -7,6 +7,12 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch DB",
+            "preLaunchTask":"run database"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch Main",
             "skipFiles": [
                 "<node_internals>/**"
@@ -15,7 +21,12 @@
             "preLaunchTask": "npm: start",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
-            ]
+            ],
+            "args": ["${workspaceFolder}/src/main.ts"],
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+            "sourceMaps": true,
+            "cwd": "${workspaceRoot}",
+            "protocol": "inspector"
         },
         {
             "type": "node",
@@ -60,8 +71,12 @@
     ],
     "compounds": [
         {
-           "name": "Start ParrotWings",
-          "configurations": ["Launch PW-MS", "Launch User-MS", "Launch Auth-MS", "Launch Main"]
-        }
+           "name": "Start ParrotWings with DB",
+          "configurations": ["Launch DB", "Launch PW-MS", "Launch User-MS", "Launch Auth-MS", "Launch Main"]
+        },
+        {
+            "name": "Start ParrotWings",
+           "configurations": ["Launch PW-MS", "Launch User-MS", "Launch Auth-MS", "Launch Main"]
+         }
     ]
 }

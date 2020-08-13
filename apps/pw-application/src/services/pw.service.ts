@@ -41,6 +41,20 @@ export class PwService {
       .toPromise();
   }
 
+  async getWailet(id) {
+   return await this.client.send({ role: 'PW', cmd: 'wailet' }, id)
+    .pipe(
+      timeout(5000), 
+      catchError(err => {
+        Logger.log(err);
+      if (err instanceof TimeoutError) {
+        return throwError(new RequestTimeoutException());
+      }
+      return throwError(err);
+    }))
+    .toPromise();
+  }
+
   async sendTransaction(data) {
     return await this.client.send({ role: 'PW', cmd: 'transaction' }, data)
       .pipe(

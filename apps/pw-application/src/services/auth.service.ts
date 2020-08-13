@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { TimeoutError, throwError } from 'rxjs';
-import { timeout, catchError } from 'rxjs/operators';
+import { timeout, catchError, tap } from 'rxjs/operators';
 import { UserService } from './user.service';
 
 @Injectable()
@@ -22,6 +22,7 @@ export class AuthService {
   }
 
   async login(data) {
+    Logger.log(data);
     return await this.authClient
       .send({ role: 'auth', cmd: 'signin' }, data)
       .pipe(
@@ -42,6 +43,7 @@ export class AuthService {
       .send({ role: 'auth', cmd: 'get' }, { jwt })
       .pipe(
         timeout(5000),
+        tap(userdata=>Logger.log({userdata})),
         catchError(err => {
           Logger.log(err);
           if (err instanceof TimeoutError) {

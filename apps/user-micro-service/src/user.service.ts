@@ -17,6 +17,7 @@ export class UserService {
   ) {}
 
   async getByUsername(data): Promise<IUser> {
+    Logger.log(data);
     return await this.userRepository.findOne({ username: data.username });
   }
 

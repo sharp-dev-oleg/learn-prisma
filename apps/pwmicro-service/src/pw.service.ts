@@ -3,17 +3,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
 import { Wailet } from '../../../libs/database/src/models/Wailet';
 import { Transaction } from '../../../libs/database/src/models/Transaction';
-import { Cron, CronExpression,SchedulerRegistry } from '@nestjs/schedule';
+import {  CronExpression,SchedulerRegistry } from '@nestjs/schedule';
+import * as io from "socket.io-client";
 import { CronJob } from 'cron';
 @Injectable()
 export class PWService {
+  ws: any;
   constructor(
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
     @InjectRepository(Wailet)
     private wailetRepository: Repository<Wailet>,
     private scheduler:SchedulerRegistry
-  ) {}
+  ) {
+
+   this.ws = io.connect("http://192.168.1.65:3000", {transports:["websocket"]});
+   
+  }
 
   async getTransactions(userId: number) {
     const wailetIds = (
@@ -34,10 +40,17 @@ export class PWService {
     return this.wailetRepository.find({ userId });
   }
 
+  async getWailet(id: number) {
+    return this.wailetRepository.findOne({ id });
+  }
+
   async send(transaction: Transaction) {
     transaction.status = 'NEW';
     const entity = this.transactionRepository.create(transaction);
-    await this.transactionRepository.insert(entity);
+    const result =  await this.transactionRepository.insert(entity);
+    transaction.id = result.identifiers[0].id;
+    this.ws.emit('update_transaction', transaction);
+    return transaction;
   }
   
   addCronJob(){
@@ -55,6 +68,7 @@ export class PWService {
         });
         for (const transaction of transactions) {
           transaction.status = 'PENDING';
+          this.ws.emit('update_transaction', transaction);
           await tmanager.save(transaction);
           const fromWailet = await this.wailetRepository.findOne({
             id: transaction.fromWailetId,
@@ -65,15 +79,19 @@ export class PWService {
 
           if (fromWailet.balance < transaction.amount ) {
             transaction.status = 'FAILED';
+            this.ws.emit('update_transaction', transaction);
             await tmanager.save(transaction);
           } else {
-          await this.wailetRepository.manager.transaction(async (wmanager:EntityManager) => {
-              fromWailet.balance -= transaction.amount;
-              toWailet.balance += transaction.amount;
+          await this.wailetRepository.manager.transaction(async (wmanager: EntityManager) => {
+              fromWailet.balance = parseFloat(fromWailet.balance.toString()) - parseFloat(transaction.amount.toString());
+              toWailet.balance = parseFloat(toWailet.balance.toString()) + parseFloat(transaction.amount.toString());
+              this.ws.emit('update_wailet', fromWailet);
+              this.ws.emit('update_wailet', toWailet);
               wmanager.save(fromWailet);
               wmanager.save(toWailet);
             });
             transaction.status = 'COMPLETE';
+            this.ws.emit('update_transaction', transaction);
             await tmanager.save(transaction);
           }
         }

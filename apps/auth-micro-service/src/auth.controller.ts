@@ -11,9 +11,9 @@ export class AuthController {
  
   @MessagePattern({ role: 'auth', cmd: 'signin'})
   async login(user: IUser) {
+    Logger.log(user);
     const curuser = await this.authService.validateUser(user.username,user.password);
-    if(curuser === null)
-     throw new Error('Unauthorized');
+   
 
     return this.authService.login(curuser);
   }

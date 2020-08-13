@@ -19,18 +19,21 @@ export class AuthService {
       .pipe(
         timeout(5000), 
         catchError(err => {
+          Logger.log(err);
         if (err instanceof TimeoutError) {
           return throwError(new RequestTimeoutException());
         }
         return throwError(err);
-      }),)
+      }))
       .toPromise();
-
-      if(compareSync(password, user?.password)) {
+      
+      if(user != null && compareSync(password, user?.password)) {
         return user;
+      } else {
+        throw new Error("Unauthorized");
       }
 
-      return null;
+      
     } catch(e) {
       Logger.log(e);
       throw e;

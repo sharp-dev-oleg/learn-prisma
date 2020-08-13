@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { Transport, ClientProxyFactory } from '@nestjs/microservices';
@@ -24,15 +24,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     { 
       provide: 'USER_CLIENT',
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
-      ClientProxyFactory.create({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get<string>('USER_MICRO_SERVICE_HOST') ,
-            port: configService.get<number>('USER_MICRO_SERVICE_PORT') ,
-          }
-        })
-      
+      useFactory: (configService: ConfigService) =>{
+        Logger.log(`user servuce h:${configService.get<string>('USER_MICRO_SERVICE_HOST')}:${configService.get<number>('USER_MICRO_SERVICE_PORT')}`);
+       return ClientProxyFactory.create({
+            transport: Transport.TCP,
+            options: {
+              host: configService.get<string>('USER_MICRO_SERVICE_HOST') ,
+              port: configService.get<number>('USER_MICRO_SERVICE_PORT') ,
+            }
+          })
+        
+      }
     },
     ConfigService,
     AuthService, 

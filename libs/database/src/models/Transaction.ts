@@ -7,7 +7,7 @@ export class Transaction{
     id: number;
     @Column()
     status: string;
-    @Column()
+    @Column({ type: 'decimal', precision: 13, scale: 2 })
     amount: number;
     @Column({name:'from_wailet_id'})
     fromWailetId: number;

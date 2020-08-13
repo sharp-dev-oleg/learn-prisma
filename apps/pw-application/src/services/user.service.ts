@@ -12,9 +12,10 @@ export class UserService {
   ) {}
 
  async create(data) {
+  Logger.log('create',data)
     return await this.userClient.send({ role: 'user', cmd: 'create' }, data)
       .pipe(
-        timeout(5000), 
+        timeout(15000), 
         catchError(err => {
           Logger.log(err);
         if (err instanceof TimeoutError) {

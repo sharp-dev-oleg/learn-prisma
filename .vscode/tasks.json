@@ -25,6 +25,12 @@
 			"command":"nest start pwmicro-service",
 			"label": "start pw",
 			"detail": "nest auth start"
+		},
+		{
+			"type":"shell",
+			"command":"docker run --rm -P --name pg_test eg_postgresql",
+			"label": "run database",
+			"detail": "docker run database"
 		}
 
 	]

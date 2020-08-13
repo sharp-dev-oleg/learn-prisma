@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "07c068f5-e322-4cb3-9422-0c501a130555",
+		"_postman_id": "abfcf661-0645-428d-972d-b5272bd71040",
 		"name": "NestJs-Learn",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -35,10 +35,29 @@
 		{
 			"name": "login",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"username\":\"freshekt\",\r\n\t\"password\":\"30122784\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": ""
+					"raw": "192.168.1.65:3000/login",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"65"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
 				}
 			},
 			"response": []
@@ -46,10 +65,27 @@
 		{
 			"name": "recrent",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6ImZyZXNoZWt0IiwicGFzc3dvcmQiOiIkMmIkMTAkNzJQTGFXOTJ4WjBUbnA1L2ZDa29VdW9MUElNL2g5R0phVXNkdFVoLjhRT2d0SGVDV0taeUcifSwic3ViIjoxLCJpYXQiOjE1OTU4NjYyNjUsImV4cCI6MTU5NTkwMjI2NX0.9IiofqbaHfw_oRQ9UH3iLW-mETaiP4OLmNoGhRz5a1w",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "localhost:3000/recent",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"recent"
+					]
 				}
 			},
 			"response": []
@@ -68,10 +104,28 @@
 		{
 			"name": "wailets",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6ImZyZXNoZWt0IiwicGFzc3dvcmQiOiIkMmIkMTAkNzJQTGFXOTJ4WjBUbnA1L2ZDa29VdW9MUElNL2g5R0phVXNkdFVoLjhRT2d0SGVDV0taeUcifSwic3ViIjoxLCJpYXQiOjE1OTU4NjYyNjUsImV4cCI6MTU5NTkwMjI2NX0.9IiofqbaHfw_oRQ9UH3iLW-mETaiP4OLmNoGhRz5a1w",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "localhost:3000/wailets/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"wailets",
+						"1"
+					]
 				}
 			},
 			"response": []

@@ -8,7 +8,15 @@ export class UserController {
 
   @MessagePattern({ role: 'user', cmd: 'get' })
   async getByUserName(data){
-    return await this.service.getByUsername(data);
+    try {
+      Logger.log("getByUserName");
+      Logger.log(data);
+    const resultUser = await this.service.getByUsername(data);
+    Logger.log(resultUser);
+    return resultUser;
+    } catch (e) {
+      Logger.log(e);
+    }
   }
 
 

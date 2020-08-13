@@ -32,6 +32,7 @@ export class PWController{
     @UseGuards(AuthGuard)
     @Post('/send')
     async send(@Body() data){
+        Logger.log(data);
      return await this.service.sendTransaction(data);
     }
 
