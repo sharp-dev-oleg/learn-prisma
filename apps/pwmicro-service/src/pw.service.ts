@@ -1,11 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
-import { Wailet } from '../../../libs/database/src/models/Wailet';
-import { Transaction } from '../../../libs/database/src/models/Transaction';
+import { Wailet } from '@app/database/models/Wailet';
+import { Transaction } from '@app/database/models/Transaction';
+import * as moment from 'moment';
 import {  CronExpression,SchedulerRegistry } from '@nestjs/schedule';
 import * as io from "socket.io-client";
 import { CronJob } from 'cron';
+import { UserModel } from '@app/database/models/user.model';
 @Injectable()
 export class PWService {
   ws: any;
@@ -46,6 +48,9 @@ export class PWService {
 
   async send(transaction: Transaction) {
     transaction.status = 'NEW';
+    transaction.date = moment().toDate();
+    transaction.fromBalance = 0;
+    transaction.toBalance = 0;
     const entity = this.transactionRepository.create(transaction);
     const result =  await this.transactionRepository.insert(entity);
     transaction.id = result.identifiers[0].id;
@@ -85,6 +90,8 @@ export class PWService {
           await this.wailetRepository.manager.transaction(async (wmanager: EntityManager) => {
               fromWailet.balance = parseFloat(fromWailet.balance.toString()) - parseFloat(transaction.amount.toString());
               toWailet.balance = parseFloat(toWailet.balance.toString()) + parseFloat(transaction.amount.toString());
+              transaction.fromBalance = fromWailet.balance;
+              transaction.toBalance = toWailet.balance;
               this.ws.emit('update_wailet', fromWailet);
               this.ws.emit('update_wailet', toWailet);
               wmanager.save(fromWailet);

@@ -12,10 +12,12 @@ export class AuthController {
   @MessagePattern({ role: 'auth', cmd: 'signin'})
   async login(user: IUser) {
     Logger.log(user);
-    const curuser = await this.authService.validateUser(user.username,user.password);
-   
-
-    return this.authService.login(curuser);
+    try{
+     const curuser = await this.authService.validateUser(user.username,user.password);
+     return this.authService.login(curuser);
+    } catch (e) {
+      return null;
+    }
   }
 
   @MessagePattern({ role: 'auth', cmd: 'check'})
