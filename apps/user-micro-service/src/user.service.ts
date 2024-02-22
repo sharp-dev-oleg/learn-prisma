@@ -8,7 +8,6 @@ import { UserModel } from '../../../libs/database/src/models/user.model';
 
 @Injectable()
 export class UserService {
- 
   constructor(
     @InjectRepository(UserModel)
     private userRepository: Repository<UserModel>,
@@ -22,10 +21,11 @@ export class UserService {
   }
 
   async search(query: string): Promise<IUser[]> {
-    
-    const result = await this.userRepository.find({where:`username LIKE '${query}%'`});
+    const result = await this.userRepository.find({
+      where: `username LIKE '${query}%'`,
+    });
 
-    return result.map(({id,username})=>({id,username}));
+    return result.map(({ id, username }) => ({ id, username }));
   }
 
   async createUser(user: IUser): Promise<InsertResult> {

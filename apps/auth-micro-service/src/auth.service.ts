@@ -1,7 +1,12 @@
-import { Injectable, Inject, RequestTimeoutException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  RequestTimeoutException,
+  Logger,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { TimeoutError, throwError } from 'rxjs';
-import {timeout,catchError} from 'rxjs/operators'
+import { timeout, catchError } from 'rxjs/operators';
 import { compareSync } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
@@ -10,42 +15,42 @@ export class AuthService {
   constructor(
     @Inject('USER_CLIENT')
     private readonly client: ClientProxy,
-    private readonly jwtService: JwtService) {}
+    private readonly jwtService: JwtService,
+  ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
-    
     try {
-      const user = await this.client.send({ role: 'user', cmd: 'get' }, { username })
-      .pipe(
-        timeout(5000), 
-        catchError(err => {
-          Logger.log(err);
-        if (err instanceof TimeoutError) {
-          return throwError(new RequestTimeoutException());
-        }
-        return throwError(err);
-      }))
-      .toPromise();
-      
-      if(user != null && compareSync(password, user?.password)) {
+      const user = await this.client
+        .send({ role: 'user', cmd: 'get' }, { username })
+        .pipe(
+          timeout(5000),
+          catchError((err) => {
+            Logger.log(err);
+            if (err instanceof TimeoutError) {
+              return throwError(new RequestTimeoutException());
+            }
+            return throwError(err);
+          }),
+        )
+        .toPromise();
+
+      if (user != null && compareSync(password, user?.password)) {
         return user;
       } else {
-        throw new Error("Unauthorized");
+        throw new Error('Unauthorized');
       }
-
-      
-    } catch(e) {
+    } catch (e) {
       Logger.log(e);
       throw e;
     }
   }
 
   async login(user) {
-    const {username, id} = user
-    const payload = { user:{username, id}, sub: user.id};
+    const { username, id } = user;
+    const payload = { user: { username, id }, sub: user.id };
     return {
       userId: user.id,
-      accessToken: this.jwtService.sign(payload)
+      accessToken: this.jwtService.sign(payload),
     };
   }
 
@@ -59,6 +64,6 @@ export class AuthService {
       exp,
     } = this.jwtService.decode(jwt) as any;
 
-    return { id, username, exp};
+    return { id, username, exp };
   }
 }

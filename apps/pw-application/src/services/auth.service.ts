@@ -29,11 +29,14 @@ export class AuthService {
       .send({ role: 'auth', cmd: 'signin' }, data)
       .pipe(
         timeout(5000),
-        tap( response =>{
-          if(response == null)
-          throw new HttpException("User with given credentials not found",HttpStatus.NOT_FOUND);
+        tap((response) => {
+          if (response == null)
+            throw new HttpException(
+              'User with given credentials not found',
+              HttpStatus.NOT_FOUND,
+            );
         }),
-        catchError(err => {
+        catchError((err) => {
           Logger.log(err);
           if (err instanceof TimeoutError) {
             return throwError(new RequestTimeoutException());
@@ -49,8 +52,8 @@ export class AuthService {
       .send({ role: 'auth', cmd: 'get' }, { jwt })
       .pipe(
         timeout(5000),
-        tap(userdata=>Logger.log({userdata})),
-        catchError(err => {
+        tap((userdata) => Logger.log({ userdata })),
+        catchError((err) => {
           Logger.log(err);
           if (err instanceof TimeoutError) {
             return throwError(new RequestTimeoutException());
@@ -59,6 +62,5 @@ export class AuthService {
         }),
       )
       .toPromise();
-
   }
 }

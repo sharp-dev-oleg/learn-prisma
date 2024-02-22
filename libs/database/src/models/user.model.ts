@@ -4,16 +4,15 @@ import { hash } from 'bcrypt';
 
 @Entity()
 export class UserModel implements IUser {
-    @PrimaryGeneratedColumn()
-    id: number;
-    @Column()
-    username: string;
-    @Column()
-    password: string;
-    
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column()
+  username: string;
+  @Column()
+  password: string;
 
-    @BeforeInsert()
-    async hashPassword() {
-      this.password = await hash(this.password, 10);
-    }
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await hash(this.password, 10);
+  }
 }

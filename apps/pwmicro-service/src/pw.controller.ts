@@ -1,11 +1,10 @@
 import { Transaction } from './../../../libs/database/src/models/Transaction';
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { PWService } from './pw.service';
 import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class PWController {
-
   constructor(private readonly service: PWService) {}
 
   @MessagePattern({ role: 'PW', cmd: 'recent' })
@@ -14,7 +13,7 @@ export class PWController {
   }
 
   @MessagePattern({ role: 'PW', cmd: 'transaction' })
-  sendTransaction(data:Transaction) {
+  sendTransaction(data: Transaction) {
     Logger.log(data);
     return this.service.send(data);
   }

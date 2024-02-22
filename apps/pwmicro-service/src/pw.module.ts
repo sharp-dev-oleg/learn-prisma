@@ -7,9 +7,9 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: ['database.env','.env']}),
+    ConfigModule.forRoot({ envFilePath: ['database.env', '.env'] }),
     DatabaseModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
   ],
   controllers: [PWController],
   providers: [PWService],

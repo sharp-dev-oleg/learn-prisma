@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Body, Request, Logger, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { AuthGuard } from '../guards/auth.guard';
 
@@ -14,12 +21,13 @@ export class AuthController {
   @Post('/login')
   login(@Body() user) {
     return this.service.login(user);
-    
   }
 
   @UseGuards(AuthGuard)
   @Get('/userdata')
   user(@Request() req) {
-    return this.service.getUserData(req.headers['authorization']?.split(' ')[1]);
+    return this.service.getUserData(
+      req.headers['authorization']?.split(' ')[1],
+    );
   }
 }

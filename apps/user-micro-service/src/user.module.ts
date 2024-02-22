@@ -6,9 +6,9 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: ['database.env', '.env']}),
-    DatabaseModule
- ],
+    ConfigModule.forRoot({ envFilePath: ['database.env', '.env'] }),
+    DatabaseModule,
+  ],
   controllers: [UserController],
   providers: [UserService],
 })

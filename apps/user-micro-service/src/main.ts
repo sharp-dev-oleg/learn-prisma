@@ -7,12 +7,11 @@ async function bootstrap() {
     UserModule,
     {
       transport: Transport.TCP,
-      options:{
+      options: {
         host: process.env.USER_MICRO_SERVICE_HOST || 'localhost',
-        port: parseInt(process.env.USER_MICRO_SERVICE_PORT) || 3003
-      }
-    }
-     
+        port: parseInt(process.env.USER_MICRO_SERVICE_PORT) || 3003,
+      },
+    },
   );
   app.listen(() => console.log('UserMicroService is listening'));
 }

@@ -1,6 +1,5 @@
 import { UserService } from '../src/user.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
 import { UserModule } from '../src/user.module';
 import { Transport } from '@nestjs/microservices';
 
@@ -14,10 +13,10 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestMicroservice({
       transport: Transport.TCP,
-      options:{
+      options: {
         host: process.env.USER_MICRO_SERVICE_HOST || 'localhost',
-        port: parseInt(process.env.USER_MICRO_SERVICE_PORT) || 3003
-      }
+        port: parseInt(process.env.USER_MICRO_SERVICE_PORT) || 3003,
+      },
     });
 
     userService = moduleFixture.get<UserService>(UserService);
@@ -25,12 +24,12 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  afterAll(async ()=>{
+  afterAll(async () => {
     await app.close();
   });
 
   it('userService should be definded', async (done) => {
-      expect(userService).toBeDefined();
-      done();
+    expect(userService).toBeDefined();
+    done();
   });
 });

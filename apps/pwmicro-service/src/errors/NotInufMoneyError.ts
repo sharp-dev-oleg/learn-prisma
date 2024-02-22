@@ -1,1 +1,1 @@
-export class NotInufMoneyError extends Error{}
+export class NotInufMoneyError extends Error {}
