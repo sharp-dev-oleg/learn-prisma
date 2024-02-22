@@ -7,20 +7,20 @@ export class AuthWSGuard implements CanActivate {
       @Inject('AUTH_CLIENT')
       private readonly client: ClientProxy
     ) {}
-  
+
     async canActivate(
       context: ExecutionContext,
     ): Promise<boolean> {
       Logger.log("ws.canActivate");
       const req = context.switchToWs().getClient();
-          
+
       try{
         const res = await this.client.send(
           { role: 'auth', cmd: 'check' },
           { jwt: req.handshake.headers['authorization']?.split(' ')[1]})
           .pipe(timeout(5000))
-          .toPromise<boolean>();
-  
+          .toPromise();
+
           return res;
       } catch(err) {
         Logger.error(err);
@@ -28,7 +28,7 @@ export class AuthWSGuard implements CanActivate {
       }
     }
 
-   
 
-    
+
+
   }
