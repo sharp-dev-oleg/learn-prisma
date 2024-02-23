@@ -1,6 +1,6 @@
 import { Wailet } from './models/Wailet';
 import { Module } from '@nestjs/common';
-import { DatabaseService } from './database.service';
+import { PrismaService } from './prisma.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModel } from './models/user.model';
 import { Transaction } from './models/Transaction';
@@ -11,21 +11,10 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       envFilePath: 'database.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT, 10) || 5432,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      entities: [UserModel, Transaction, Wailet],
-      synchronize: true,
-    }),
-    TypeOrmModule.forFeature([UserModel, Transaction, Wailet]),
   ],
-  providers: [DatabaseService],
+  providers: [PrismaService],
   exports: [
-    DatabaseService,
+    PrismaService,
     TypeOrmModule.forFeature([UserModel, Transaction, Wailet]),
   ],
 })
