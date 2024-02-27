@@ -15,26 +15,29 @@ import { UserController } from './controllers/user.controller';
 import { GetWayController } from './controllers/getway.controller';
 
 @Module({
-  imports: [ConfigModule.forRoot({ envFilePath: '.env' }), ClientsModule],
+  imports: [ConfigModule.forRoot({ envFilePath: '.env' }), ClientsModule.register([
+    { name: 'USER_CLIENT', transport: Transport.TCP },
+  ]),],
   controllers: [AuthController, PWController, UserController],
   providers: [
     GetWayController,
-    {
-      provide: 'USER_CLIENT',
-      useFactory: (configService: ConfigService) => {
-        Logger.log(
-          `user servuce h:${configService.get<string>('USER_MICRO_SERVICE_HOST')}:${configService.get<number>('USER_MICRO_SERVICE_PORT')}`,
-        );
-        return ClientProxyFactory.create({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get<string>('USER_MICRO_SERVICE_HOST'),
-            port: configService.get<number>('USER_MICRO_SERVICE_PORT'),
-          },
-        });
-      },
-      inject: [ConfigService],
-    },
+    // {
+    //   provide: 'USER_CLIENT',
+    //   useFactory: (configService: ConfigService) => {
+    //     Logger.log(
+    //       `user servuce h:${configService.get<string>('USER_MICRO_SERVICE_HOST')}:${configService.get<number>('USER_MICRO_SERVICE_PORT')}`,
+    //     );
+    //     return ClientProxyFactory.create({
+    //       transport: Transport.TCP,
+    //       options: {
+    //         host: configService.get<string>('USER_MICRO_SERVICE_HOST'),
+    //         port: configService.get<number>('USER_MICRO_SERVICE_PORT'),
+    //       },
+    //     });
+    //   },
+    //   inject: [ConfigService],
+    // },
+
     {
       provide: 'PW_CLIENT',
       useFactory: (configService: ConfigService) =>

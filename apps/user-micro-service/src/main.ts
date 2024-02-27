@@ -13,6 +13,7 @@ async function bootstrap() {
       },
     },
   );
-  app.listen(() => console.log('UserMicroService is listening'));
+  await app.listen();
+  console.log('UserMicroService is listening');
 }
 bootstrap();
