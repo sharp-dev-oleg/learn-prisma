@@ -11,7 +11,7 @@ export class UserController {
     try {
       Logger.log('getByUserName');
       Logger.log(data);
-      const resultUser = await this.service.getByUsername(data);
+      const resultUser = await this.service.search(data);
       Logger.log(resultUser);
       return resultUser;
     } catch (e) {
@@ -20,13 +20,15 @@ export class UserController {
   }
 
   @MessagePattern({ role: 'user', cmd: 'search' })
-  async search(query) {
-    return await this.service.search(query);
+  search(query) {
+    Logger.log('role:user;cmd:search', {query});
+    return this.service.search(query);
   }
 
   @MessagePattern({ role: 'user', cmd: 'create' })
   async createUser(data) {
     Logger.log('create', data);
-    return await this.service.createUser(data);
+    return true;
+    //return await this.service.createUser(data);
   }
 }

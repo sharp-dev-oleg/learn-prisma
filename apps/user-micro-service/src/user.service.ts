@@ -5,7 +5,10 @@ import { UserRepository } from '@app/database/user-repository.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService, private userRepository: UserRepository) {}
+  constructor(
+    private prisma: PrismaService,
+    private userRepository: UserRepository,
+  ) {}
 
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,

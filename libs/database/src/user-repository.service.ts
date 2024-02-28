@@ -6,12 +6,10 @@ import { User } from '@prisma/client';
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByUsername(
-    username: User['name'],
-  ): Promise<User[]> {
+  async findByUsername(username: User['name']): Promise<User[]> {
     return this.prisma.user.findMany({
       where: {
-        name: username
+        name: username,
       },
     });
   }

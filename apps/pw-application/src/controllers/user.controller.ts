@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Query, Get } from '@nestjs/common';
+import { Controller, UseGuards, Query, Get, Logger } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { AuthGuard } from '../guards/auth.guard';
 
@@ -9,6 +9,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('/search')
   search(@Query('q') q) {
+    Logger.log(`UserController:search`, { q });
     return this.service.search(q);
   }
 }

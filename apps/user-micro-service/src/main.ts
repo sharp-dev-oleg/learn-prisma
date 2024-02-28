@@ -14,6 +14,9 @@ async function bootstrap() {
     },
   );
   await app.listen();
-  console.log('UserMicroService is listening');
+  console.log('UserMicroService is listening', {
+    host: process.env.USER_MICRO_SERVICE_HOST || 'localhost',
+    port: parseInt(process.env.USER_MICRO_SERVICE_PORT) || 3003,
+  });
 }
 bootstrap();
