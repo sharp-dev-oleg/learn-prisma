@@ -21,7 +21,7 @@ export class UserController {
 
   @MessagePattern({ role: 'user', cmd: 'search' })
   search(query) {
-    Logger.log('role:user;cmd:search', {query});
+    Logger.log('role:user;cmd:search', { query });
     return this.service.search(query);
   }
 

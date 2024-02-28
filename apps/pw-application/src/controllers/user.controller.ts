@@ -6,7 +6,7 @@ import { AuthGuard } from '../guards/auth.guard';
 export class UserController {
   constructor(private readonly service: UserService) {}
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Get('/search')
   search(@Query('q') q) {
     Logger.log(`UserController:search`, { q });
