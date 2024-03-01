@@ -49,16 +49,11 @@ export class UserService {
     }
   }
 
-  // constructor(
-  //   private userRepository: Repository<UserModel>,
-  //   @InjectRepository(Wailet)
-  //   private wailetRepository: Repository<Wailet>,
-  // ) {}
-  //
-  // async getByUsername(data): Promise<IUser> {
-  //   Logger.log(data);
-  //   return await this.userRepository.findOne({ username: data.username });
-  // }
+  getByUsername(username: string): Promise<User> {
+    Logger.log('getByUsername', username);
+    return this.userRepository.getByUsername(username);
+  }
+
   //
   // async search(query: string): Promise<IUser[]> {
   //   const result = await this.userRepository.find({

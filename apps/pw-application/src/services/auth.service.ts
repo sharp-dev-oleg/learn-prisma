@@ -23,28 +23,25 @@ export class AuthService {
     return await this.userService.create(data);
   }
 
-  async login(data) {
-    Logger.log(data);
-    return await this.authClient
-      .send({ role: 'auth', cmd: 'signin' }, data)
-      .pipe(
-        timeout(5000),
-        tap((response) => {
-          if (response == null)
-            throw new HttpException(
-              'User with given credentials not found',
-              HttpStatus.NOT_FOUND,
-            );
-        }),
-        catchError((err) => {
-          Logger.log(err);
-          if (err instanceof TimeoutError) {
-            return throwError(new RequestTimeoutException());
-          }
-          return throwError(err);
-        }),
-      )
-      .toPromise();
+  login(data) {
+    Logger.log('AuthSerive:login', data);
+    return this.authClient.send({ role: 'auth', cmd: 'signin' }, data).pipe(
+      timeout(5000),
+      tap((response) => {
+        if (response == null)
+          throw new HttpException(
+            'User with given credentials not found',
+            HttpStatus.NOT_FOUND,
+          );
+      }),
+      catchError((err) => {
+        Logger.log(err);
+        if (err instanceof TimeoutError) {
+          return throwError(new RequestTimeoutException());
+        }
+        return throwError(err);
+      }),
+    );
   }
 
   async getUserData(jwt: string) {

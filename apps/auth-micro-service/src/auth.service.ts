@@ -5,10 +5,11 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { TimeoutError, throwError } from 'rxjs';
+import { TimeoutError, throwError, firstValueFrom } from 'rxjs';
 import { timeout, catchError } from 'rxjs/operators';
 import { compareSync } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -20,9 +21,8 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     try {
-      const user = await this.client
-        .send({ role: 'user', cmd: 'get' }, { username })
-        .pipe(
+      const user = await firstValueFrom(
+        this.client.send({ role: 'user', cmd: 'get' }, username).pipe(
           timeout(5000),
           catchError((err) => {
             Logger.log(err);
@@ -31,8 +31,8 @@ export class AuthService {
             }
             return throwError(err);
           }),
-        )
-        .toPromise();
+        ),
+      );
 
       if (user != null && compareSync(password, user?.password)) {
         return user;
@@ -45,7 +45,7 @@ export class AuthService {
     }
   }
 
-  async login(user) {
+  login(user: User) {
     const { username, id } = user;
     const payload = { user: { username, id }, sub: user.id };
     return {

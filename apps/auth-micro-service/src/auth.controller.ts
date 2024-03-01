@@ -9,7 +9,7 @@ export class AuthController {
 
   @MessagePattern({ role: 'auth', cmd: 'signin' })
   async login(user: IUser) {
-    Logger.log(user);
+    Logger.log('AuthController:login', user);
     try {
       const curuser = await this.authService.validateUser(
         user.username,
@@ -17,7 +17,7 @@ export class AuthController {
       );
       return this.authService.login(curuser);
     } catch (e) {
-      return null;
+      return e.message;
     }
   }
 

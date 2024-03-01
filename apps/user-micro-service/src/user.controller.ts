@@ -7,11 +7,11 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   @MessagePattern({ role: 'user', cmd: 'get' })
-  async getByUserName(data) {
+  async getByUserName(data: string) {
     try {
-      Logger.log('getByUserName');
+      Logger.log('UserController:getByUserName');
       Logger.log(data);
-      const resultUser = await this.service.search(data);
+      const resultUser = await this.service.getByUsername(data);
       Logger.log(resultUser);
       return resultUser;
     } catch (e) {
@@ -26,8 +26,8 @@ export class UserController {
   }
 
   @MessagePattern({ role: 'user', cmd: 'create' })
-  async createUser(data) {
+  createUser(data) {
     Logger.log('create', data);
-    return await this.service.create(data);
+    return this.service.create(data);
   }
 }

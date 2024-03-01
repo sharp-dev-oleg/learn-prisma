@@ -6,6 +6,14 @@ import { User } from '@prisma/client';
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
 
+  async getByUsername(username: User['username']): Promise<User> {
+    return this.prisma.user.findFirst({
+      where: {
+        username,
+      },
+    });
+  }
+
   async findByUsername(username: User['username']): Promise<User[]> {
     return this.prisma.user.findMany({
       where: {

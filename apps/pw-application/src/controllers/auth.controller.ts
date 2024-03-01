@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { AuthGuard } from '../guards/auth.guard';
+import { User } from '@prisma/client';
 
 @Controller()
 export class AuthController {
@@ -19,6 +20,7 @@ export class AuthController {
     return this.service.registration(user);
   }
 
+  @Post('/sessions/create')
   @Post('/login')
   login(@Body() user) {
     return this.service.login(user);
