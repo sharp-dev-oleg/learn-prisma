@@ -28,7 +28,6 @@ export class UserController {
   @MessagePattern({ role: 'user', cmd: 'create' })
   async createUser(data) {
     Logger.log('create', data);
-    return true;
-    //return await this.service.createUser(data);
+    return await this.service.create(data);
   }
 }

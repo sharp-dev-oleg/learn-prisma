@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@app/database';
 import { Prisma, User } from '@prisma/client';
 import { UserRepository } from '@app/database/user.repository';
+import { PublicUser } from '@app/types/user';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -18,15 +20,33 @@ export class UserService {
     });
   }
 
-  async search(query: string): Promise<User[]> {
+  async search(query: string): Promise<PublicUser[]> {
     console.log('query1', query);
     const result = await this.userRepository.findByUsername(query);
 
-    return result.map(({ id, name }) => ({ id, name }));
+    return result.map(({ id, username }) => ({ id, username }));
   }
 
-  async create(userData: User) {
-    return this.prisma.user.create({ data: userData });
+  async create(userData: User): Promise<User> {
+    try {
+      userData.password = await hash(userData.password, 10);
+      const res = this.prisma.user.create({ data: userData });
+
+      // const wailetEntity = this.wailetRepository.create({
+      //   name: 'wailetPW',
+      //   balance: 500,
+      //   userId: userEntity.id,
+      // });
+
+      // await this.wailetRepository.insert(wailetEntity);
+
+      Logger.log('createUser - Created user');
+
+      return res;
+    } catch (e) {
+      Logger.log(e);
+      throw e;
+    }
   }
 
   // constructor(
@@ -48,26 +68,4 @@ export class UserService {
   //   return result.map(({ id, username }) => ({ id, username }));
   // }
   //
-  // async createUser(user: IUser): Promise<InsertResult> {
-  //   try {
-  //     const userEntity = this.userRepository.create(user);
-  //
-  //     const res = await this.userRepository.insert(userEntity);
-  //
-  //     const wailetEntity = this.wailetRepository.create({
-  //       name: 'wailetPW',
-  //       balance: 500,
-  //       userId: userEntity.id,
-  //     });
-  //
-  //     await this.wailetRepository.insert(wailetEntity);
-  //
-  //     Logger.log('createUser - Created user');
-  //
-  //     return res;
-  //   } catch (e) {
-  //     Logger.log(e);
-  //     throw e;
-  //   }
-  // }
 }

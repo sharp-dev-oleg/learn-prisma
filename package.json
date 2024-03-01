@@ -104,7 +104,9 @@
     ],
     "moduleNameMapper": {
       "@app/database/(.*)": "<rootDir>/libs/database/src/$1",
-      "@app/database": "<rootDir>/libs/database/src"
+      "@app/database": "<rootDir>/libs/database/src",
+      "@app/types/(.*)": "<rootDir>/types/$1",
+      "@app/types": "<rootDir>/types"
     }
   }
 }

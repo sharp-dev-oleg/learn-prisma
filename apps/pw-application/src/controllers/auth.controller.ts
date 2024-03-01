@@ -13,6 +13,7 @@ import { AuthGuard } from '../guards/auth.guard';
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
+  @Post('/users')
   @Post('/registration')
   registration(@Body() user) {
     return this.service.registration(user);

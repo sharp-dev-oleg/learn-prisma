@@ -17,7 +17,7 @@ import { GetWayController } from './controllers/getway.controller';
 @Module({
   imports: [ConfigModule.forRoot({ envFilePath: '.env' })],
   controllers: [
-    // AuthController,
+    AuthController,
     // PWController,
     UserController,
   ],
@@ -59,7 +59,7 @@ import { GetWayController } from './controllers/getway.controller';
         }),
       inject: [ConfigService],
     },
-    // AuthService,
+    AuthService,
     // PwService,
     UserService,
   ],
