@@ -1,5 +1,5 @@
 import { Transaction } from 'libs/database/src/models/Transaction';
-import { Wailet } from 'libs/database/src/models/Wailet';
+import { Wallet } from 'libs/database/src/models/Wallet';
 
 import {
   MessageBody,
@@ -33,12 +33,12 @@ export class GetWayController
   ) {}
 
   @UseGuards(AuthWSGuard)
-  @SubscribeMessage('get_my_wailets')
-  getMyWailets(client: Socket): Observable<WsResponse<Array<Wailet>>> {
+  @SubscribeMessage('get_my_wallets')
+  getMyWallets(client: Socket): Observable<WsResponse<Array<Wallet>>> {
     return this.getUser(client.request).pipe(
       take(1),
-      switchMap((user) => from(this.service.getWailets(user.id))),
-      map((data) => ({ event: 'my_wailets', data })),
+      switchMap((user) => from(this.service.getWallets(user.id))),
+      map((data) => ({ event: 'my_wallets', data })),
     );
   }
 
@@ -72,9 +72,9 @@ export class GetWayController
   async updateTransaction(@MessageBody() model: Transaction) {
     Logger.log('updateTransaction');
     Logger.log(model);
-    const from = await this.service.getWailet(model.fromWailetId);
+    const from = await this.service.getWallet(model.fromWalletId);
     Logger.log(from);
-    const to = await this.service.getWailet(model.toWailetId);
+    const to = await this.service.getWallet(model.toWalletId);
     Logger.log(to);
     if (this.users[from.userId] !== undefined) {
       Logger.log(
@@ -90,12 +90,12 @@ export class GetWayController
     } else Logger.log(`user(${to.userId}) not connected`);
   }
 
-  @SubscribeMessage('update_wailet')
-  updateWailet(@MessageBody() model: Wailet) {
-    Logger.log('updateWailet');
+  @SubscribeMessage('update_wallet')
+  updateWallet(@MessageBody() model: Wallet) {
+    Logger.log('updateWallet');
     Logger.log(model);
     if (this.users[model.userId] != undefined)
-      this.users[model.userId].emit('update_my_wailet', model);
+      this.users[model.userId].emit('update_my_wallet', model);
     else Logger.log(`user(${model.userId}) not connected`);
   }
 

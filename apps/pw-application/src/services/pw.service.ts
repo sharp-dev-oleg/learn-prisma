@@ -32,9 +32,9 @@ export class PwService {
       .toPromise();
   }
 
-  async getWailets(userId) {
+  async getWallets(userId) {
     return await this.client
-      .send({ role: 'PW', cmd: 'wailets' }, userId)
+      .send({ role: 'PW', cmd: 'wallets' }, userId)
       .pipe(
         timeout(5000),
         catchError((err) => {
@@ -48,9 +48,9 @@ export class PwService {
       .toPromise();
   }
 
-  async getWailet(id) {
+  async getWallet(id) {
     return await this.client
-      .send({ role: 'PW', cmd: 'wailet' }, id)
+      .send({ role: 'PW', cmd: 'wallet' }, id)
       .pipe(
         timeout(5000),
         catchError((err) => {

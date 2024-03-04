@@ -10,10 +10,10 @@ export class Transaction {
   status: string;
   @Column({ type: 'decimal', precision: 13, scale: 2 })
   amount: number;
-  @Column({ name: 'from_wailet_id' })
-  fromWailetId: number;
-  @Column({ name: 'to_wailet_id' })
-  toWailetId: number;
+  @Column({ name: 'from_wallet_id' })
+  fromWalletId: number;
+  @Column({ name: 'to_wallet_id' })
+  toWalletId: number;
   @Column({ type: 'decimal', precision: 13, scale: 2 })
   fromBalance: number;
   @Column({ type: 'decimal', precision: 13, scale: 2 })

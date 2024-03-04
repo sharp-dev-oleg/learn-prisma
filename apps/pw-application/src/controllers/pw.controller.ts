@@ -28,10 +28,10 @@ export class PWController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('/wailets/:userId')
-  async wailets(@Param('userId') userId) {
-    Logger.log('GET - wailets: userId');
-    return await this.service.getWailets(userId);
+  @Get('/wallets/:userId')
+  async wallets(@Param('userId') userId) {
+    Logger.log('GET - wallets: userId');
+    return await this.service.getWallets(userId);
   }
 
   getUser(req: any) {

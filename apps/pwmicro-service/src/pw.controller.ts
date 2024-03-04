@@ -18,13 +18,13 @@ export class PWController {
     return this.service.send(data);
   }
 
-  @MessagePattern({ role: 'PW', cmd: 'wailets' })
-  getWailets(userId) {
-    return this.service.getWailets(userId);
+  @MessagePattern({ role: 'PW', cmd: 'wallets' })
+  getWallets(userId) {
+    return this.service.getWallets(userId);
   }
 
-  @MessagePattern({ role: 'PW', cmd: 'wailet' })
-  getWailet(id) {
-    return this.service.getWailet(id);
+  @MessagePattern({ role: 'PW', cmd: 'wallet' })
+  getWallet(id) {
+    return this.service.getWallet(id);
   }
 }

@@ -1,5 +1,5 @@
 import { Transaction } from './../../../libs/database/src/models/Transaction';
-import { Wailet } from './../../../libs/database/src/models/Wailet';
+import { Wallet } from './../../../libs/database/src/models/Wallet';
 import { Transport } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -9,7 +9,7 @@ import { PWService } from '../src/pw.service';
 describe('AppController (e2e)', () => {
   let app;
   let pwService: PWService;
-  let wailetRepo: Repository<Wailet>;
+  let walletRepo: Repository<Wallet>;
   let transactionRepo: Repository<Transaction>;
 
   beforeAll(async () => {
@@ -26,8 +26,8 @@ describe('AppController (e2e)', () => {
     });
 
     pwService = moduleFixture.get<PWService>(PWService);
-    wailetRepo = moduleFixture.get<Repository<Wailet>>(
-      getRepositoryToken(Wailet),
+    walletRepo = moduleFixture.get<Repository<Wallet>>(
+      getRepositoryToken(Wallet),
     );
     transactionRepo = moduleFixture.get<Repository<Transaction>>(
       getRepositoryToken(Transaction),
@@ -51,16 +51,16 @@ describe('AppController (e2e)', () => {
       Promise.resolve([
         {
           id: 1,
-          fromWailetId: 1,
-          toWailetId: 2,
+          fromWalletId: 1,
+          toWalletId: 2,
           status: 'NEW',
           amount: 5,
         },
       ]),
     );
 
-    jest.spyOn(wailetRepo, 'findOne').mockImplementation(
-      (req): Promise<Wailet> =>
+    jest.spyOn(walletRepo, 'findOne').mockImplementation(
+      (req): Promise<Wallet> =>
         Promise.resolve({
           id: parseInt(req.id.toString()),
           name: `test${req.id}`,
@@ -69,8 +69,8 @@ describe('AppController (e2e)', () => {
         }),
     );
     jest
-      .spyOn(wailetRepo.manager, 'save')
-      .mockImplementation((wailet) => Promise.resolve(wailet));
+      .spyOn(walletRepo.manager, 'save')
+      .mockImplementation((wallet) => Promise.resolve(wallet));
 
     const saveMock = jest
       .spyOn(transactionRepo.manager, 'save')
@@ -81,9 +81,9 @@ describe('AppController (e2e)', () => {
         Promise.resolve(callback(transactionRepo.manager)),
       );
     jest
-      .spyOn(wailetRepo.manager, 'transaction')
+      .spyOn(walletRepo.manager, 'transaction')
       .mockImplementation((callback: any) =>
-        Promise.resolve(callback(wailetRepo.manager)),
+        Promise.resolve(callback(walletRepo.manager)),
       );
     await pwService.process();
     console.log(saveMock.mock.calls[1]);
@@ -98,16 +98,16 @@ describe('AppController (e2e)', () => {
       Promise.resolve([
         {
           id: 1,
-          fromWailetId: 1,
-          toWailetId: 2,
+          fromWalletId: 1,
+          toWalletId: 2,
           status: 'NEW',
           amount: 5,
         },
       ]),
     );
 
-    jest.spyOn(wailetRepo, 'findOne').mockImplementation(
-      (req): Promise<Wailet> =>
+    jest.spyOn(walletRepo, 'findOne').mockImplementation(
+      (req): Promise<Wallet> =>
         Promise.resolve({
           id: parseInt(req.id.toString()),
           name: `test${req.id}`,
@@ -116,8 +116,8 @@ describe('AppController (e2e)', () => {
         }),
     );
     jest
-      .spyOn(wailetRepo.manager, 'save')
-      .mockImplementation((wailet) => Promise.resolve(wailet));
+      .spyOn(walletRepo.manager, 'save')
+      .mockImplementation((wallet) => Promise.resolve(wallet));
 
     const saveMock = jest
       .spyOn(transactionRepo.manager, 'save')
@@ -128,9 +128,9 @@ describe('AppController (e2e)', () => {
         Promise.resolve(callback(transactionRepo.manager)),
       );
     jest
-      .spyOn(wailetRepo.manager, 'transaction')
+      .spyOn(walletRepo.manager, 'transaction')
       .mockImplementation((callback: any) =>
-        Promise.resolve(callback(wailetRepo.manager)),
+        Promise.resolve(callback(walletRepo.manager)),
       );
     await pwService.process();
     console.log(saveMock.mock.calls);

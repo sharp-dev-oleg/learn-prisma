@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
-import { Wailet } from '@app/database/models/Wailet';
+import { Wallet } from '@app/database/models/Wallet';
 import { Transaction } from '@app/database/models/Transaction';
 import * as moment from 'moment';
 import { CronExpression, SchedulerRegistry } from '@nestjs/schedule';
@@ -17,7 +17,7 @@ export class PWService {
     @Inject(TransactionRepository)
     private transactionRepository: TransactionRepository,
     @Inject(WalletRepository)
-    private wailetRepository: WalletRepository,
+    private walletRepository: WalletRepository,
     private scheduler: SchedulerRegistry,
   ) {
     this.ws = io.connect('http://192.168.1.65:3000', {
@@ -26,26 +26,26 @@ export class PWService {
   }
 
   async getTransactions(userId: number) {
-    // const wailetIds = (
-    //   await this.wailetRepository
-    //     .createQueryBuilder('wailet')
+    // const walletIds = (
+    //   await this.walletRepository
+    //     .createQueryBuilder('wallet')
     //     .select('id')
-    //     .where('wailet.user_id = :userId', { userId })
+    //     .where('wallet.user_id = :userId', { userId })
     //     .getRawMany()
     // ).map((s) => s.id);
     // return await this.transactionRepository
     //   .createQueryBuilder()
-    //   .where(`from_wailet_id In (:...wailetIds)`, { wailetIds })
-    //   .orWhere(`to_wailet_id In (:...wailetIds)`, { wailetIds })
+    //   .where(`from_wallet_id In (:...walletIds)`, { walletIds })
+    //   .orWhere(`to_wallet_id In (:...walletIds)`, { walletIds })
     //   .getMany();
   }
 
-  async getWailets(userId: number) {
-    // return this.wailetRepository.find({ where: { userId } });
+  async getWallets(userId: number) {
+    // return this.walletRepository.find({ where: { userId } });
   }
 
-  async getWailet(id: number) {
-    // return this.wailetRepository.findOne({ where: { id } });
+  async getWallet(id: number) {
+    // return this.walletRepository.findOne({ where: { id } });
   }
 
   async send(transaction: Transaction) {
@@ -79,36 +79,36 @@ export class PWService {
     //       transaction.status = 'PENDING';
     //       this.ws.emit('update_transaction', transaction);
     //       await tmanager.save(transaction);
-    //       const fromWailet = await this.wailetRepository.findOne({
+    //       const fromWallet = await this.walletRepository.findOne({
     //         where: {
-    //           id: transaction.fromWailetId,
+    //           id: transaction.fromWalletId,
     //         },
     //       });
-    //       const toWailet = await this.wailetRepository.findOne({
+    //       const toWallet = await this.walletRepository.findOne({
     //         where: {
-    //           id: transaction.toWailetId,
+    //           id: transaction.toWalletId,
     //         },
     //       });
     //
-    //       if (fromWailet.balance < transaction.amount) {
+    //       if (fromWallet.balance < transaction.amount) {
     //         transaction.status = 'FAILED';
     //         this.ws.emit('update_transaction', transaction);
     //         await tmanager.save(transaction);
     //       } else {
-    //         await this.wailetRepository.manager.transaction(
+    //         await this.walletRepository.manager.transaction(
     //           async (wmanager: EntityManager) => {
-    //             fromWailet.balance =
-    //               parseFloat(fromWailet.balance.toString()) -
+    //             fromWallet.balance =
+    //               parseFloat(fromWallet.balance.toString()) -
     //               parseFloat(transaction.amount.toString());
-    //             toWailet.balance =
-    //               parseFloat(toWailet.balance.toString()) +
+    //             toWallet.balance =
+    //               parseFloat(toWallet.balance.toString()) +
     //               parseFloat(transaction.amount.toString());
-    //             transaction.fromBalance = fromWailet.balance;
-    //             transaction.toBalance = toWailet.balance;
-    //             this.ws.emit('update_wailet', fromWailet);
-    //             this.ws.emit('update_wailet', toWailet);
-    //             wmanager.save(fromWailet);
-    //             wmanager.save(toWailet);
+    //             transaction.fromBalance = fromWallet.balance;
+    //             transaction.toBalance = toWallet.balance;
+    //             this.ws.emit('update_wallet', fromWallet);
+    //             this.ws.emit('update_wallet', toWallet);
+    //             wmanager.save(fromWallet);
+    //             wmanager.save(toWallet);
     //           },
     //         );
     //         transaction.status = 'COMPLETE';

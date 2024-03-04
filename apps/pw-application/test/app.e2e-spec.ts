@@ -99,14 +99,14 @@ describe('app (e2e)', () => {
       .expect(200);
   });
 
-  it('/wailets/:userId (GET)', () => {
+  it('/wallets/:userId (GET)', () => {
     const token = 'token';
     jest.spyOn(authClient, 'send').mockImplementation(() => of(true));
     jest
-      .spyOn(pwService, 'getWailets')
+      .spyOn(pwService, 'getWallets')
       .mockImplementation(() => Promise.resolve([]));
     return request(app.getHttpServer())
-      .get('/wailets/1')
+      .get('/wallets/1')
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
@@ -138,8 +138,8 @@ describe('app (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         amount: 10,
-        fromWailetId: 1,
-        toWailetId: 2,
+        fromWalletId: 1,
+        toWalletId: 2,
       })
       .expect(201);
   });

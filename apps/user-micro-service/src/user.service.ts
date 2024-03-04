@@ -32,13 +32,13 @@ export class UserService {
       userData.password = await hash(userData.password, 10);
       const res = this.prisma.user.create({ data: userData });
 
-      // const wailetEntity = this.wailetRepository.create({
-      //   name: 'wailetPW',
+      // const walletEntity = this.walletRepository.create({
+      //   name: 'walletPW',
       //   balance: 500,
       //   userId: userEntity.id,
       // });
 
-      // await this.wailetRepository.insert(wailetEntity);
+      // await this.walletRepository.insert(walletEntity);
 
       Logger.log('createUser - Created user');
 

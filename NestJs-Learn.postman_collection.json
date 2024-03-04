@@ -102,7 +102,7 @@
 			"response": []
 		},
 		{
-			"name": "wailets",
+			"name": "wallets",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -117,13 +117,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/wailets/1",
+					"raw": "localhost:3000/wallets/1",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"wailets",
+						"wallets",
 						"1"
 					]
 				}
