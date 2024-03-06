@@ -7,7 +7,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { TimeoutError, throwError } from 'rxjs';
+import { TimeoutError, throwError, firstValueFrom } from 'rxjs';
 import { timeout, catchError, tap } from 'rxjs/operators';
 import { UserService } from './user.service';
 
@@ -45,9 +45,8 @@ export class AuthService {
   }
 
   async getUserData(jwt: string) {
-    return await this.authClient
-      .send({ role: 'auth', cmd: 'get' }, { jwt })
-      .pipe(
+    return firstValueFrom(
+      this.authClient.send({ role: 'auth', cmd: 'get' }, { jwt }).pipe(
         timeout(5000),
         tap((userdata) => Logger.log({ userdata })),
         catchError((err) => {
@@ -57,7 +56,7 @@ export class AuthService {
           }
           return throwError(err);
         }),
-      )
-      .toPromise();
+      ),
+    );
   }
 }
