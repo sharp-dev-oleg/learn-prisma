@@ -40,12 +40,12 @@ export class PWService {
     //   .getMany();
   }
 
-  async getWallets(userId: number) {
-    // return this.walletRepository.find({ where: { userId } });
+  async getWallets(userId: Wallet['userId']) {
+    return this.walletRepository.findByUserId(userId);
   }
 
-  async getWallet(id: number) {
-    // return this.walletRepository.findOne({ where: { id } });
+  async getWallet(id: Wallet['id']) {
+    return this.walletRepository.getById(id);
   }
 
   async send(transaction: Transaction) {

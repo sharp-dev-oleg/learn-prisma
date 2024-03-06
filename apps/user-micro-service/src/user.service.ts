@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@app/database';
 import { Prisma, User } from '@prisma/client';
 import { UserRepository } from '@app/database/user.repository';
+import { WalletRepository } from '@app/database/wallet.repository';
 import { PublicUser } from '@app/types/user';
 import { hash } from 'bcrypt';
 
@@ -10,6 +11,7 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     private userRepository: UserRepository,
+    private walletRepository: WalletRepository,
   ) {}
 
   async user(
@@ -30,19 +32,17 @@ export class UserService {
   async create(userData: User): Promise<User> {
     try {
       userData.password = await hash(userData.password, 10);
-      const res = this.prisma.user.create({ data: userData });
+      const newUser = await this.prisma.user.create({ data: userData });
 
-      // const walletEntity = this.walletRepository.create({
-      //   name: 'walletPW',
-      //   balance: 500,
-      //   userId: userEntity.id,
-      // });
+      await this.walletRepository.create({
+        name: 'walletPW',
+        balance: 500,
+        userId: newUser.id,
+      });
 
-      // await this.walletRepository.insert(walletEntity);
+      Logger.log('createUser - Created user', newUser);
 
-      Logger.log('createUser - Created user');
-
-      return res;
+      return newUser;
     } catch (e) {
       Logger.log(e);
       throw e;
