@@ -7,6 +7,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { TimeoutError, throwError, firstValueFrom } from 'rxjs';
 import { timeout, catchError } from 'rxjs/operators';
+import { NewTransactionType } from '@app/database/transaction.repository';
 
 @Injectable()
 export class PwService {
@@ -61,18 +62,20 @@ export class PwService {
     );
   }
 
-  async sendTransaction(data) {
+  async sendTransaction(transactionData: NewTransactionType) {
     return firstValueFrom(
-      this.client.send({ role: 'PW', cmd: 'transaction' }, data).pipe(
-        timeout(5000),
-        catchError((err) => {
-          Logger.log(err);
-          if (err instanceof TimeoutError) {
-            return throwError(new RequestTimeoutException());
-          }
-          return throwError(err);
-        }),
-      ),
+      this.client
+        .send({ role: 'PW', cmd: 'transaction' }, transactionData)
+        .pipe(
+          timeout(5000),
+          catchError((err) => {
+            Logger.log(err);
+            if (err instanceof TimeoutError) {
+              return throwError(new RequestTimeoutException());
+            }
+            return throwError(err);
+          }),
+        ),
     );
   }
 }
