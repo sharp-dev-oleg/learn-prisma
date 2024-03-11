@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "abfcf661-0645-428d-972d-b5272bd71040",
+		"_postman_id": "d84db606-f83e-4cde-92e5-90ead50bae74",
 		"name": "NestJs-Learn",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\":\"freshekt\",\n\t\"password\":\"30122784\"\n}",
+					"raw": "{\n\t\"username\":\"freshekt\",\n\t\"password\":\"30122784\",\n    \"email\": \"test@test.ru\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -164,6 +164,5 @@
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

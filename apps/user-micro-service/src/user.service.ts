@@ -31,6 +31,14 @@ export class UserService {
 
   async create(userData: User): Promise<User> {
     try {
+      const users = await this.userRepository.countUsers(
+        userData.username,
+        userData.email,
+      );
+      if (users > 0) {
+        throw new Error('Email or username is unavailable');
+      }
+
       userData.password = await hash(userData.password, 10);
       const newUser = await this.prisma.user.create({ data: userData });
 

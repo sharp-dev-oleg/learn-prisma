@@ -14,7 +14,6 @@ import { User } from '@prisma/client';
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
-  @Post('/users')
   @Post('/registration')
   registration(@Body() user) {
     return this.service.registration(user);
