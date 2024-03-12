@@ -23,7 +23,7 @@ export class UserService {
   }
 
   async search(query: string): Promise<PublicUser[]> {
-    console.log('query1', query);
+    console.log('search', query);
     const result = await this.userRepository.findByUsername(query);
 
     return result.map(({ id, username }) => ({ id, username }));
@@ -61,14 +61,4 @@ export class UserService {
     Logger.log('getByUsername', username);
     return this.userRepository.getByUsername(username);
   }
-
-  //
-  // async search(query: string): Promise<IUser[]> {
-  //   const result = await this.userRepository.find({
-  //     where: `username LIKE '${query}%'`,
-  //   });
-  //
-  //   return result.map(({ id, username }) => ({ id, username }));
-  // }
-  //
 }

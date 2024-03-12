@@ -28,7 +28,9 @@ export class UserRepository {
   async findByUsername(username: User['username']): Promise<User[]> {
     return this.userClient.findMany({
       where: {
-        username,
+        username: {
+          contains: username,
+        },
       },
     });
   }
