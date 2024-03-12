@@ -1,6 +1,3 @@
-import { Transaction } from 'libs/database/src/models/Transaction';
-import { Wallet } from 'libs/database/src/models/Wallet';
-
 import {
   MessageBody,
   SubscribeMessage,
@@ -17,6 +14,7 @@ import { UseGuards, Logger } from '@nestjs/common';
 import { PwService } from '../services/pw.service';
 import { AuthService } from '../services/auth.service';
 import { AuthWSGuard } from '../guards/authws.guard';
+import type { Transaction, Wallet } from '@prisma/client';
 
 @WebSocketGateway()
 export class GetWayController
@@ -34,7 +32,7 @@ export class GetWayController
 
   @UseGuards(AuthWSGuard)
   @SubscribeMessage('get_my_wallets')
-  getMyWallets(client: Socket): Observable<WsResponse<Array<Wallet>>> {
+  getMyWallets(client: Socket): Observable<WsResponse<Wallet[]>> {
     return this.getUser(client.request).pipe(
       take(1),
       switchMap((user) => from(this.service.getWallets(user.id))),

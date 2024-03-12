@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { Prisma, Wallet } from '@prisma/client';
+import type { Prisma, Wallet } from '@prisma/client';
 
 @Injectable()
 export class WalletRepository {
@@ -19,5 +19,14 @@ export class WalletRepository {
 
   getById(id: Wallet['id']) {
     return this.walletClient.findFirst({ where: { id } });
+  }
+
+  update(id: Wallet['id'], wallet: Prisma.WalletUpdateInput) {
+    return this.walletClient.update({
+      data: wallet,
+      where: {
+        id,
+      },
+    });
   }
 }

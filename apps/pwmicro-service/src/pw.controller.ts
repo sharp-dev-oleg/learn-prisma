@@ -1,7 +1,7 @@
-import { Transaction } from './../../../libs/database/src/models/Transaction';
 import { Controller, Logger } from '@nestjs/common';
 import { PWService } from './pw.service';
 import { MessagePattern } from '@nestjs/microservices';
+import type { Transaction } from '@prisma/client';
 
 @Controller()
 export class PWController {

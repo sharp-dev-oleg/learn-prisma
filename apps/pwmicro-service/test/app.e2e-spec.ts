@@ -1,16 +1,16 @@
-import { Transaction } from './../../../libs/database/src/models/Transaction';
-import { Wallet } from './../../../libs/database/src/models/Wallet';
 import { Transport } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { PWModule } from '../src/pw.module';
 import { PWService } from '../src/pw.service';
+import { WalletRepository } from '@app/database/wallet.repository';
+import { TransactionRepository } from '@app/database/transaction.repository';
+
 describe('AppController (e2e)', () => {
   let app;
   let pwService: PWService;
-  let walletRepo: Repository<Wallet>;
-  let transactionRepo: Repository<Transaction>;
+  let walletRepo: WalletRepository;
+  let transactionRepo: TransactionRepository;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -26,10 +26,10 @@ describe('AppController (e2e)', () => {
     });
 
     pwService = moduleFixture.get<PWService>(PWService);
-    walletRepo = moduleFixture.get<Repository<Wallet>>(
+    walletRepo = moduleFixture.get<WalletRepository>(
       getRepositoryToken(Wallet),
     );
-    transactionRepo = moduleFixture.get<Repository<Transaction>>(
+    transactionRepo = moduleFixture.get<TransactionRepository>(
       getRepositoryToken(Transaction),
     );
 

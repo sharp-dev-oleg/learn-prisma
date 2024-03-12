@@ -29,7 +29,7 @@ export class TransactionRepository {
   findNew() {
     return this.transactionClient.findMany({
       where: {
-        status: 'New',
+        status: 'NEW',
       },
     });
   }
@@ -42,6 +42,15 @@ export class TransactionRepository {
         date: moment().toDate(),
         fromBalance: 0,
         toBalance: 0,
+      },
+    });
+  }
+
+  update(id: Transaction['id'], transaction: Prisma.TransactionUpdateInput) {
+    return this.transactionClient.update({
+      data: transaction,
+      where: {
+        id,
       },
     });
   }
