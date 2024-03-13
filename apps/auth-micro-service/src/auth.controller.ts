@@ -1,14 +1,14 @@
 import { Controller, Logger } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MessagePattern } from '@nestjs/microservices';
-import { User } from '@prisma/client';
+import { AuthUser } from '@app/types/user';
 
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern({ role: 'auth', cmd: 'signin' })
-  async login(user: User) {
+  async login(user: AuthUser) {
     Logger.log('AuthController:login', user);
     try {
       const curuser = await this.authService.validateUser(

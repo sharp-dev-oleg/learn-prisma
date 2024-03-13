@@ -29,7 +29,7 @@ describe('AuthController', () => {
   });
 
   describe('root', () => {
-    it('should login', async (done) => {
+    it('should login', async () => {
       const testUser = { id: 1, username: 'test', password: 'testpwd' };
       const criptedPass = await hash(testUser.password, 10);
       jest
@@ -39,32 +39,28 @@ describe('AuthController', () => {
         );
       authdata = await authController.login(testUser);
       expect(authdata.userId).toEqual(testUser.id);
-      done();
     });
 
-    it('should is Logged In', async (done) => {
+    it('should is Logged In', async () => {
       const isLoggedIn = await authController.isLoggedIn({
         jwt: authdata.accessToken,
       });
       expect(isLoggedIn).toBeTruthy();
-      done();
     });
 
-    it('should is not Logged In', async (done) => {
+    it('should is not Logged In', async () => {
       const isNotLoggedIn = await authController.isLoggedIn({
         jwt: 'wrong-token',
       });
       expect(isNotLoggedIn).toBeFalsy();
-      done();
     });
 
-    it('should return userdata', async (done) => {
+    it('should return userdata', async () => {
       const userdata = await authController.getUserData({
         jwt: authdata.accessToken,
       });
 
       expect(userdata.username).toEqual('test');
-      done();
     });
   });
 });
