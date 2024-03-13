@@ -28,8 +28,7 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it('userService should be definded', async (done) => {
+  it('userService should be definded', async () => {
     expect(userService).toBeDefined();
-    done();
   });
 });
