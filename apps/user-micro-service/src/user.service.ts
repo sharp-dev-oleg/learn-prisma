@@ -29,7 +29,7 @@ export class UserService {
     return result.map(({ id, username }) => ({ id, username }));
   }
 
-  async create(userData: User): Promise<User> {
+  async create(userData: User): Promise<PublicUser> {
     try {
       const users = await this.userRepository.countUsers(
         userData.username,
@@ -50,7 +50,10 @@ export class UserService {
 
       Logger.log('createUser - Created user', newUser);
 
-      return newUser;
+      return {
+        id: newUser.id,
+        username: newUser.username,
+      };
     } catch (e) {
       Logger.log(e);
       throw e;

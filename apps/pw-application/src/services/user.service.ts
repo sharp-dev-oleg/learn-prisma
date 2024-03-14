@@ -1,5 +1,6 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { PublicUser } from '@app/types/user';
 
 @Injectable()
 export class UserService {
@@ -8,12 +9,18 @@ export class UserService {
     private readonly userClient: ClientProxy,
   ) {}
 
-  async create(data) {
+  create(data) {
     Logger.log('create', data);
-    return this.userClient.send({ role: 'user', cmd: 'create' }, data);
+    return this.userClient.send<PublicUser>(
+      { role: 'user', cmd: 'create' },
+      data,
+    );
   }
 
-  async search(query) {
-    return this.userClient.send({ role: 'user', cmd: 'search' }, query);
+  search(query) {
+    return this.userClient.send<PublicUser[]>(
+      { role: 'user', cmd: 'search' },
+      query,
+    );
   }
 }

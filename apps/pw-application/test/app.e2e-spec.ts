@@ -49,7 +49,7 @@ describe('app (e2e)', () => {
     pwService = moduleFixture.get<PwService>(PwService);
     userService = moduleFixture.get<UserService>(UserService);
     authClient = moduleFixture.get('AUTH_CLIENT');
-    await app.startAllMicroservicesAsync();
+
     await app.init();
   });
 
@@ -61,7 +61,7 @@ describe('app (e2e)', () => {
     const registerDate = { username: 'fresh', password: '123' };
     jest
       .spyOn(authService, 'registration')
-      .mockImplementation(() => Promise.resolve({ id: 1 }));
+      .mockImplementation(() => of({ id: 1, username: 'fresh' }));
     return request(app.getHttpServer())
       .post('/users')
       .set('Accept', 'application/json')
@@ -74,9 +74,7 @@ describe('app (e2e)', () => {
 
     jest
       .spyOn(authService, 'login')
-      .mockImplementation(() =>
-        Promise.resolve({ userId: 1, accessToken: 'token' }),
-      );
+      .mockImplementation(() => of({ userId: 1, accessToken: 'token' }));
     return request(app.getHttpServer())
       .post('/sessions/create')
       .set('Accept', 'application/json')
@@ -147,9 +145,7 @@ describe('app (e2e)', () => {
   it('/api/protected/users/list?q=fr (GET)', () => {
     const token = 'token';
     jest.spyOn(authClient, 'send').mockImplementation(() => of(true));
-    jest
-      .spyOn(userService, 'search')
-      .mockImplementation(() => Promise.resolve([]));
+    jest.spyOn(userService, 'search').mockImplementation(() => of([]));
     return request(app.getHttpServer())
       .post('/api/protected/users/list?q=fr')
       .set('Accept', 'application/json')

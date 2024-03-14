@@ -19,8 +19,8 @@ export class AuthService {
     private readonly authClient: ClientProxy,
   ) {}
 
-  async registration(data) {
-    return await this.userService.create(data);
+  registration(data) {
+    return this.userService.create(data);
   }
 
   login(data) {

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { AuthGuard } from '../guards/auth.guard';
-import { User } from '@prisma/client';
+import { firstValueFrom } from 'rxjs';
 
 @Controller()
 export class AuthController {
@@ -16,7 +16,7 @@ export class AuthController {
 
   @Post('/users')
   registration(@Body() user) {
-    return this.service.registration(user);
+    return firstValueFrom(this.service.registration(user));
   }
 
   @Post('/sessions/create')
