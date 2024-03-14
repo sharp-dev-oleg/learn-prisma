@@ -20,14 +20,6 @@ export class PWController {
   ) {}
 
   @UseGuards(AuthGuard)
-  @Get('/recent')
-  async recent(@Request() req) {
-    Logger.log('GET - recent');
-    const user = await this.getUser(req);
-    return await this.service.getTransaction(user.id);
-  }
-
-  @UseGuards(AuthGuard)
   @Get('/wallets/:userId')
   async wallets(@Param('userId') userId) {
     Logger.log('GET - wallets: userId');
@@ -41,7 +33,15 @@ export class PWController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('/send')
+  @Get('/api/protected/transactions')
+  async recent(@Request() req) {
+    Logger.log('GET - /api/protected/transactions');
+    const user = await this.getUser(req);
+    return await this.service.getTransaction(user.id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/api/protected/transactions')
   async send(@Body() data) {
     Logger.log(data);
     return await this.service.sendTransaction(data);

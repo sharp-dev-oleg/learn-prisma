@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "registration",
+			"name": "/users (registration)",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -20,20 +20,20 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/registration",
+					"raw": "localhost:3000/users",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"registration"
+						"users"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "login",
+			"name": "/sessions/create (login)",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -47,7 +47,7 @@
 					}
 				},
 				"url": {
-					"raw": "192.168.1.65:3000/login",
+					"raw": "192.168.1.65:3000/sessions/create",
 					"host": [
 						"192",
 						"168",
@@ -56,14 +56,14 @@
 					],
 					"port": "3000",
 					"path": [
-						"login"
+						"/sessions/create"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "recrent",
+			"name": "/api/protected/transactions",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -78,22 +78,24 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/recent",
+					"raw": "localhost:3000/api/protected/transactions",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"recent"
+						"api",
+						"protected",
+						"transactions"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "send",
+			"name": "/api/protected/transactions",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"url": {
 					"raw": ""
@@ -102,7 +104,7 @@
 			"response": []
 		},
 		{
-			"name": "wallets",
+			"name": "/wallets",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -131,7 +133,7 @@
 			"response": []
 		},
 		{
-			"name": "search",
+			"name": "/api/protected/users/list",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -143,16 +145,19 @@
 						}
 					]
 				},
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/search?q=fr",
+					"raw": "localhost:3000/api/protected/users/list?q=fr",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"search"
+						"api",
+						"protected",
+						"users",
+						"list"
 					],
 					"query": [
 						{

@@ -1,5 +1,5 @@
-import { AuthService } from './../src/auth.service';
-import { AuthModule } from './../src/auth.module';
+import { AuthService } from '../src/auth.service';
+import { AuthModule } from '../src/auth.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../src/auth.controller';
 import { Transport } from '@nestjs/microservices';

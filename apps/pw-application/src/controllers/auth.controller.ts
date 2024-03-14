@@ -14,20 +14,19 @@ import { User } from '@prisma/client';
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
-  @Post('/registration')
+  @Post('/users')
   registration(@Body() user) {
     return this.service.registration(user);
   }
 
   @Post('/sessions/create')
-  @Post('/login')
   login(@Body() user) {
     return this.service.login(user);
   }
 
   @UseGuards(AuthGuard)
-  @Get('/userdata')
-  user(@Request() req) {
+  @Get('/api/protected/user-info')
+  userInfo(@Request() req) {
     return this.service.getUserData(
       req.headers['authorization']?.split(' ')[1],
     );

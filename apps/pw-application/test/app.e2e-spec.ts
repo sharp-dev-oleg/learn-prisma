@@ -1,7 +1,7 @@
-import { AuthService } from './../src/services/auth.service';
+import { AuthService } from '../src/services/auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 import { of } from 'rxjs';
 import { PwService } from '../src/services/pw.service';
 import { UserService } from '../src/services/user.service';
@@ -57,19 +57,19 @@ describe('app (e2e)', () => {
     await app.close();
   });
 
-  it('/registration (POST)', () => {
+  it('/users (POST)', () => {
     const registerDate = { username: 'fresh', password: '123' };
     jest
       .spyOn(authService, 'registration')
       .mockImplementation(() => Promise.resolve({ id: 1 }));
     return request(app.getHttpServer())
-      .post('/registration')
+      .post('/users')
       .set('Accept', 'application/json')
       .send(registerDate)
       .expect(201);
   });
 
-  it('/login (POST)', () => {
+  it('/sessions/create (POST)', () => {
     const loginDate = { username: 'fresh', password: '123' };
 
     jest
@@ -78,13 +78,13 @@ describe('app (e2e)', () => {
         Promise.resolve({ userId: 1, accessToken: 'token' }),
       );
     return request(app.getHttpServer())
-      .post('/login')
+      .post('/sessions/create')
       .set('Accept', 'application/json')
       .send(loginDate)
       .expect(201);
   });
 
-  it('/userdata (GET)', () => {
+  it('/api/protected/user-info (GET)', () => {
     const token = 'token';
     jest.spyOn(authClient, 'send').mockImplementation(() => of(true));
     jest
@@ -93,7 +93,7 @@ describe('app (e2e)', () => {
         Promise.resolve({ id: 1, username: 'test', exp: 123456 }),
       );
     return request(app.getHttpServer())
-      .get('/userdata')
+      .get('/api/protected/user-info')
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
@@ -112,20 +112,20 @@ describe('app (e2e)', () => {
       .expect(200);
   });
 
-  it('/recent (GET)', () => {
+  it('/api/protected/transactions (GET)', () => {
     const token = 'token';
     jest.spyOn(authClient, 'send').mockImplementation(() => of(true));
     jest
       .spyOn(pwService, 'getTransaction')
       .mockImplementation(() => Promise.resolve([]));
     return request(app.getHttpServer())
-      .get('/recent')
+      .get('/api/protected/transactions')
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
 
-  it('/send (POST)', () => {
+  it('/api/protected/transactions (POST)', () => {
     const token = 'token';
 
     jest.spyOn(authClient, 'send').mockImplementation(() => of(true));
@@ -133,7 +133,7 @@ describe('app (e2e)', () => {
       .spyOn(pwService, 'sendTransaction')
       .mockImplementation(() => Promise.resolve());
     return request(app.getHttpServer())
-      .post('/send')
+      .post('/api/protected/transactions')
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${token}`)
       .send({
@@ -144,16 +144,16 @@ describe('app (e2e)', () => {
       .expect(201);
   });
 
-  it('/search?q=fr (GET)', () => {
+  it('/api/protected/users/list?q=fr (GET)', () => {
     const token = 'token';
     jest.spyOn(authClient, 'send').mockImplementation(() => of(true));
     jest
       .spyOn(userService, 'search')
       .mockImplementation(() => Promise.resolve([]));
     return request(app.getHttpServer())
-      .get('/search?q=fr')
+      .post('/api/protected/users/list?q=fr')
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${token}`)
-      .expect(200);
+      .expect(201);
   });
 });

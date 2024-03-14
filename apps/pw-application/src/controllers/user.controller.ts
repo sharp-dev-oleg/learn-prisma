@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Query, Get, Logger } from '@nestjs/common';
+import { Controller, UseGuards, Query, Post, Logger } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { AuthGuard } from '../guards/auth.guard';
 
@@ -7,7 +7,7 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   @UseGuards(AuthGuard)
-  @Get('/search')
+  @Post('/api/protected/users/list')
   search(@Query('q') q) {
     Logger.log(`UserController:search`, { q });
     return this.service.search(q);
