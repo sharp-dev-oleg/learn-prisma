@@ -1,4 +1,11 @@
-import { Controller, UseGuards, Query, Post, Logger } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Query,
+  Post,
+  Logger,
+  Body,
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { AuthGuard } from '../guards/auth.guard';
 
@@ -6,10 +13,17 @@ import { AuthGuard } from '../guards/auth.guard';
 export class UserController {
   constructor(private readonly service: UserService) {}
 
+  @Post('/users')
+  registration(@Body() user) {
+    return this.service.create(user);
+  }
+
   @UseGuards(AuthGuard)
   @Post('/api/protected/users/list')
   search(@Query('q') q) {
     Logger.log(`UserController:search`, { q });
-    return this.service.search(q);
+    return this.service.search(q).subscribe((test) => {
+      console.log('test', test);
+    });
   }
 }

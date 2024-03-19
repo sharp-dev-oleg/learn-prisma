@@ -6,10 +6,11 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { getClientPipeOperatorsWithTap } from '@app/utils/pipe';
+import type { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -18,10 +19,6 @@ export class AuthService {
     @Inject('AUTH_CLIENT')
     private readonly authClient: ClientProxy,
   ) {}
-
-  registration(data) {
-    return this.userService.create(data);
-  }
 
   login(data) {
     Logger.log('AuthSerive:login', data);
@@ -46,7 +43,7 @@ export class AuthService {
           ...getClientPipeOperatorsWithTap(
             tap((userdata) => Logger.log({ userdata })),
           ),
-        ),
+        ) as Observable<User>,
     );
   }
 }

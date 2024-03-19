@@ -1,14 +1,20 @@
-import { catchError, timeout } from 'rxjs/operators';
-import { Logger, RequestTimeoutException } from '@nestjs/common';
-import { throwError, tap, TimeoutError } from 'rxjs';
+import { timeout } from 'rxjs/operators';
+import {
+  BadRequestException,
+  Logger,
+  RequestTimeoutException,
+} from '@nestjs/common';
+import { tap, TimeoutError } from 'rxjs';
 
 const defaultTimeout = timeout(5000);
-const defaultCatchError = catchError((err) => {
-  Logger.log(err);
-  if (err instanceof TimeoutError) {
-    return throwError(new RequestTimeoutException());
-  }
-  return throwError(err);
+const defaultCatchError = tap({
+  error: (err) => {
+    Logger.log('Client error', err);
+    if (err instanceof TimeoutError) {
+      throw new RequestTimeoutException();
+    }
+    throw new BadRequestException(err?.message ?? 'Unknown error');
+  },
 });
 
 export const getClientPipeOperators = (): [

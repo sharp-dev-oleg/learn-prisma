@@ -14,7 +14,7 @@ import { UseGuards, Logger } from '@nestjs/common';
 import { PwService } from '../services/pw.service';
 import { AuthService } from '../services/auth.service';
 import { AuthWSGuard } from '../guards/authws.guard';
-import type { Transaction, Wallet } from '@prisma/client';
+import type { Transaction, User, Wallet } from '@prisma/client';
 
 @WebSocketGateway()
 export class GetWayController
@@ -37,7 +37,7 @@ export class GetWayController
       take(1),
       switchMap((user) => from(this.service.getWallets(user.id))),
       map((data) => ({ event: 'my_wallets', data })),
-    );
+    ) as Observable<WsResponse<Wallet[]>>;
   }
 
   handleConnection(client: Socket) {
@@ -45,7 +45,7 @@ export class GetWayController
     this.getUser(client.handshake)
       .pipe(
         take(1),
-        filter((user) => user !== false),
+        filter((user) => !!user),
       )
       .subscribe((user) => {
         Logger.log(`user: ${user.username} ${user.id} connected`);
@@ -58,7 +58,7 @@ export class GetWayController
     this.getUser(client.handshake)
       .pipe(
         take(1),
-        filter((user) => user !== false),
+        filter((user) => !!user),
       )
       .subscribe((user) => {
         Logger.log(`user: ${user.username} ${user.id} disconnected`);
@@ -97,7 +97,7 @@ export class GetWayController
     else Logger.log(`user(${model.userId}) not connected`);
   }
 
-  getUser(req: any) {
+  getUser(req: any): Observable<User> {
     return from(
       this.authService.getUserData(req.headers['authorization']?.split(' ')[1]),
     );

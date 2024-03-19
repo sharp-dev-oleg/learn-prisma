@@ -1,8 +1,9 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { NewTransactionType } from '@app/database/transaction.repository';
 import { getClientPipeOperators } from '@app/utils/pipe';
+import { Wallet } from '@prisma/client';
 
 @Injectable()
 export class PwService {
@@ -32,7 +33,7 @@ export class PwService {
     return firstValueFrom(
       this.client
         .send({ role: 'PW', cmd: 'wallet' }, id)
-        .pipe(...getClientPipeOperators()),
+        .pipe(...getClientPipeOperators()) as Observable<Wallet>,
     );
   }
 

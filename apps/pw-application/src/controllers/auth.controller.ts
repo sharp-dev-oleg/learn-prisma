@@ -8,16 +8,10 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { AuthGuard } from '../guards/auth.guard';
-import { firstValueFrom } from 'rxjs';
 
 @Controller()
 export class AuthController {
   constructor(private readonly service: AuthService) {}
-
-  @Post('/users')
-  registration(@Body() user) {
-    return firstValueFrom(this.service.registration(user));
-  }
 
   @Post('/sessions/create')
   login(@Body() user) {

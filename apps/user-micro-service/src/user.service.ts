@@ -5,6 +5,7 @@ import { UserRepository } from '@app/database/user.repository';
 import { WalletRepository } from '@app/database/wallet.repository';
 import { PublicUser } from '@app/types/user';
 import { hash } from 'bcrypt';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
@@ -36,7 +37,7 @@ export class UserService {
         userData.email,
       );
       if (users > 0) {
-        throw new Error('Email or username is unavailable');
+        throw 'Email or username is unavailable';
       }
 
       userData.password = await hash(userData.password, 10);
@@ -55,8 +56,8 @@ export class UserService {
         username: newUser.username,
       };
     } catch (e) {
-      Logger.log(e);
-      throw e;
+      Logger.log('UserService:create:error', e);
+      throw new RpcException(e.toString());
     }
   }
 
