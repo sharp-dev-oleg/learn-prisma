@@ -34,8 +34,6 @@ describe('AppController (e2e)', () => {
     );
 
     await app.init();
-
-    //  pwService.addCronJob();
   });
 
   afterAll(async () => {

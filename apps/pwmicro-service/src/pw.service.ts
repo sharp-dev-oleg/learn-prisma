@@ -46,12 +46,6 @@ export class PWService {
     return newTransaction;
   }
 
-  addCronJob() {
-    const job = new CronJob(CronExpression.EVERY_MINUTE, () => this.process());
-    this.scheduler.addCronJob('pw-proccess', job);
-    job.start();
-  }
-
   @Cron(CronExpression.EVERY_MINUTE)
   async process() {
     try {

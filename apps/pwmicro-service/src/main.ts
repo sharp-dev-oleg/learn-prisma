@@ -18,7 +18,5 @@ async function bootstrap() {
   );
   await app.listen();
   console.log('PWMicroService is listening');
-  const pwService = app.get<PWService>(PWService);
-  pwService.addCronJob();
 }
 bootstrap();
