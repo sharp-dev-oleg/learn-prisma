@@ -106,7 +106,8 @@
       "@app/database/(.*)": "<rootDir>/libs/database/src/$1",
       "@app/database": "<rootDir>/libs/database/src",
       "@app/types/(.*)": "<rootDir>/types/$1",
-      "@app/types": "<rootDir>/types"
+      "@app/types": "<rootDir>/types",
+      "@app/utils/(.*)": "<rootDir>/libs/utils/$1"
     }
   }
 }

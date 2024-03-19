@@ -1,13 +1,8 @@
-import {
-  Injectable,
-  Inject,
-  RequestTimeoutException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { TimeoutError, throwError, firstValueFrom } from 'rxjs';
-import { timeout, catchError } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 import { NewTransactionType } from '@app/database/transaction.repository';
+import { getClientPipeOperators } from '@app/utils/pipe';
 
 @Injectable()
 export class PwService {
@@ -19,46 +14,25 @@ export class PwService {
   async getTransaction(userId) {
     Logger.log('getTransaction');
     return firstValueFrom(
-      this.client.send({ role: 'PW', cmd: 'recent' }, userId).pipe(
-        timeout(5000),
-        catchError((err) => {
-          Logger.log(err);
-          if (err instanceof TimeoutError) {
-            return throwError(new RequestTimeoutException());
-          }
-          return throwError(err);
-        }),
-      ),
+      this.client
+        .send({ role: 'PW', cmd: 'recent' }, userId)
+        .pipe(...getClientPipeOperators()),
     );
   }
 
   async getWallets(userId) {
     return firstValueFrom(
-      this.client.send({ role: 'PW', cmd: 'wallets' }, userId).pipe(
-        timeout(5000),
-        catchError((err) => {
-          Logger.log(err);
-          if (err instanceof TimeoutError) {
-            return throwError(new RequestTimeoutException());
-          }
-          return throwError(err);
-        }),
-      ),
+      this.client
+        .send({ role: 'PW', cmd: 'wallets' }, userId)
+        .pipe(...getClientPipeOperators()),
     );
   }
 
   async getWallet(id) {
     return firstValueFrom(
-      this.client.send({ role: 'PW', cmd: 'wallet' }, id).pipe(
-        timeout(5000),
-        catchError((err) => {
-          Logger.log(err);
-          if (err instanceof TimeoutError) {
-            return throwError(new RequestTimeoutException());
-          }
-          return throwError(err);
-        }),
-      ),
+      this.client
+        .send({ role: 'PW', cmd: 'wallet' }, id)
+        .pipe(...getClientPipeOperators()),
     );
   }
 
@@ -66,16 +40,7 @@ export class PwService {
     return firstValueFrom(
       this.client
         .send({ role: 'PW', cmd: 'transaction' }, transactionData)
-        .pipe(
-          timeout(5000),
-          catchError((err) => {
-            Logger.log(err);
-            if (err instanceof TimeoutError) {
-              return throwError(new RequestTimeoutException());
-            }
-            return throwError(err);
-          }),
-        ),
+        .pipe(...getClientPipeOperators()),
     );
   }
 }

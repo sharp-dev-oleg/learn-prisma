@@ -1,15 +1,10 @@
-import {
-  Injectable,
-  Inject,
-  RequestTimeoutException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { TimeoutError, throwError, firstValueFrom } from 'rxjs';
-import { timeout, catchError } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 import { compareSync } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { getClientPipeOperators } from '@app/utils/pipe';
 
 @Injectable()
 export class AuthService {
@@ -22,19 +17,12 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<any> {
     try {
       const user = await firstValueFrom(
-        this.client.send({ role: 'user', cmd: 'get' }, username).pipe(
-          timeout(5000),
-          catchError((err) => {
-            Logger.log(err);
-            if (err instanceof TimeoutError) {
-              return throwError(new RequestTimeoutException());
-            }
-            return throwError(err);
-          }),
-        ),
+        this.client
+          .send<User>({ role: 'user', cmd: 'get' }, username)
+          .pipe(...getClientPipeOperators()),
       );
 
-      if (user != null && compareSync(password, user?.password)) {
+      if (user != null && compareSync(password, (user as User)?.password)) {
         return user;
       } else {
         throw new Error('Unauthorized');

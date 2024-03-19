@@ -17,6 +17,9 @@
       "@app/database/*": [
         "libs/database/src/*"
       ],
+      "@app/utils/*": [
+        "libs/utils/*"
+      ],
       "@app/types": [
         "libs/types"
       ],

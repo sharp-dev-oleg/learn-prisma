@@ -1,15 +1,15 @@
 import {
   Injectable,
   Inject,
-  RequestTimeoutException,
   Logger,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { TimeoutError, throwError, firstValueFrom } from 'rxjs';
-import { timeout, catchError, tap } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { UserService } from './user.service';
+import { getClientPipeOperatorsWithTap } from '@app/utils/pipe';
 
 @Injectable()
 export class AuthService {
@@ -26,37 +26,27 @@ export class AuthService {
   login(data) {
     Logger.log('AuthSerive:login', data);
     return this.authClient.send({ role: 'auth', cmd: 'signin' }, data).pipe(
-      timeout(5000),
-      tap((response) => {
-        if (response == null)
-          throw new HttpException(
-            'User with given credentials not found',
-            HttpStatus.NOT_FOUND,
-          );
-      }),
-      catchError((err) => {
-        Logger.log(err);
-        if (err instanceof TimeoutError) {
-          return throwError(new RequestTimeoutException());
-        }
-        return throwError(err);
-      }),
+      ...getClientPipeOperatorsWithTap(
+        tap((response) => {
+          if (response == null)
+            throw new HttpException(
+              'User with given credentials not found',
+              HttpStatus.NOT_FOUND,
+            );
+        }),
+      ),
     );
   }
 
   async getUserData(jwt: string) {
     return firstValueFrom(
-      this.authClient.send({ role: 'auth', cmd: 'get' }, { jwt }).pipe(
-        timeout(5000),
-        tap((userdata) => Logger.log({ userdata })),
-        catchError((err) => {
-          Logger.log(err);
-          if (err instanceof TimeoutError) {
-            return throwError(new RequestTimeoutException());
-          }
-          return throwError(err);
-        }),
-      ),
+      this.authClient
+        .send({ role: 'auth', cmd: 'get' }, { jwt })
+        .pipe(
+          ...getClientPipeOperatorsWithTap(
+            tap((userdata) => Logger.log({ userdata })),
+          ),
+        ),
     );
   }
 }
