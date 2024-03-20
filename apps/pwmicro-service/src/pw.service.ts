@@ -62,7 +62,7 @@ export class PWService {
   async processOneTransaction(transaction: Transaction, tx: PrismaClient) {
     try {
       this.ws.emit('update_transaction', transaction);
-      this.transactionRepository.update(
+      await this.transactionRepository.update(
         transaction.id,
         {
           status: 'PENDING',
@@ -72,14 +72,16 @@ export class PWService {
 
       const fromWallet = await this.walletRepository.getById(
         transaction.fromWalletId,
+        tx,
       );
       const toWallet = await this.walletRepository.getById(
         transaction.toWalletId,
+        tx,
       );
 
       if (fromWallet.balance < transaction.amount) {
         this.ws.emit('update_transaction', transaction);
-        this.transactionRepository.update(
+        await this.transactionRepository.update(
           transaction.id,
           {
             status: 'FAILED',
@@ -97,12 +99,17 @@ export class PWService {
         transaction.toBalance = toWallet.balance;
         this.ws.emit('update_wallet', fromWallet);
         this.ws.emit('update_wallet', toWallet);
-        this.walletRepository.update(fromWallet.id, fromWallet);
-        this.walletRepository.update(toWallet.id, toWallet);
+        await this.walletRepository.update(fromWallet.id, fromWallet, tx);
+        await this.walletRepository.update(toWallet.id, toWallet, tx);
 
         transaction.status = 'COMPLETE';
         this.ws.emit('update_transaction', transaction);
-        this.transactionRepository.update(transaction.id, transaction, tx);
+        const newTransaction = await this.transactionRepository.update(
+          transaction.id,
+          transaction,
+          tx,
+        );
+        Logger.log('Processed transaction', newTransaction);
       }
     } catch (err) {
       Logger.log(err);
