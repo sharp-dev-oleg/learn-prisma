@@ -6,4 +6,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
   }
+
+  startTransaction(transaction) {
+    return this.$transaction(async (transactionClient) => {
+      await transaction(transactionClient);
+    });
+  }
 }

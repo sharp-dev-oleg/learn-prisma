@@ -1,13 +1,14 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import * as io from 'socket.io-client';
-import { CronJob } from 'cron';
+
 import {
   NewTransactionType,
   TransactionRepository,
 } from '@app/database/transaction.repository';
 import { WalletRepository } from '@app/database/wallet.repository';
-import type { Wallet } from '@prisma/client';
+import type { PrismaClient, Transaction, Wallet } from '@prisma/client';
+import { PrismaService } from '@app/database';
 
 @Injectable()
 export class PWService {
@@ -17,7 +18,8 @@ export class PWService {
     private transactionRepository: TransactionRepository,
     @Inject(WalletRepository)
     private walletRepository: WalletRepository,
-    private scheduler: SchedulerRegistry,
+    @Inject(PrismaService)
+    private prismaService: PrismaService,
   ) {
     this.ws = io.connect('http://192.168.1.65:3000', {
       transports: ['websocket'],
@@ -48,51 +50,60 @@ export class PWService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async process() {
+    const transactions = await this.transactionRepository.findNew();
+    console.log('Pending Transactions', transactions);
+    for (const transaction of transactions) {
+      this.prismaService.startTransaction(async (tx) => {
+        await this.processOneTransaction(transaction, tx);
+      });
+    }
+  }
+
+  async processOneTransaction(transaction: Transaction, tx: PrismaClient) {
     try {
-      //await this.transactionRepository.manager.transaction(async (tmanager) => {
-      const transactions = await this.transactionRepository.findNew();
-      console.log('Pending Transactions', transactions);
-      for (const transaction of transactions) {
-        this.ws.emit('update_transaction', transaction);
-        this.transactionRepository.update(transaction.id, {
+      this.ws.emit('update_transaction', transaction);
+      this.transactionRepository.update(
+        transaction.id,
+        {
           status: 'PENDING',
-        });
+        },
+        tx,
+      );
 
-        const fromWallet = await this.walletRepository.getById(
-          transaction.fromWalletId,
-        );
-        const toWallet = await this.walletRepository.getById(
-          transaction.toWalletId,
-        );
+      const fromWallet = await this.walletRepository.getById(
+        transaction.fromWalletId,
+      );
+      const toWallet = await this.walletRepository.getById(
+        transaction.toWalletId,
+      );
 
-        if (fromWallet.balance < transaction.amount) {
-          this.ws.emit('update_transaction', transaction);
-          this.transactionRepository.update(transaction.id, {
+      if (fromWallet.balance < transaction.amount) {
+        this.ws.emit('update_transaction', transaction);
+        this.transactionRepository.update(
+          transaction.id,
+          {
             status: 'FAILED',
-          });
-        } else {
-          //await this.walletRepository.manager.transaction(
-          //async (wmanager: EntityManager) => {
-          fromWallet.balance =
-            parseFloat(fromWallet.balance.toString()) -
-            parseFloat(transaction.amount.toString());
-          toWallet.balance =
-            parseFloat(toWallet.balance.toString()) +
-            parseFloat(transaction.amount.toString());
-          transaction.fromBalance = fromWallet.balance;
-          transaction.toBalance = toWallet.balance;
-          this.ws.emit('update_wallet', fromWallet);
-          this.ws.emit('update_wallet', toWallet);
-          this.walletRepository.update(fromWallet.id, fromWallet);
-          this.walletRepository.update(toWallet.id, toWallet);
-          //},
-          //);
-          transaction.status = 'COMPLETE';
-          this.ws.emit('update_transaction', transaction);
-          this.transactionRepository.update(transaction.id, transaction);
-        }
+          },
+          tx,
+        );
+      } else {
+        fromWallet.balance =
+          parseFloat(fromWallet.balance.toString()) -
+          parseFloat(transaction.amount.toString());
+        toWallet.balance =
+          parseFloat(toWallet.balance.toString()) +
+          parseFloat(transaction.amount.toString());
+        transaction.fromBalance = fromWallet.balance;
+        transaction.toBalance = toWallet.balance;
+        this.ws.emit('update_wallet', fromWallet);
+        this.ws.emit('update_wallet', toWallet);
+        this.walletRepository.update(fromWallet.id, fromWallet);
+        this.walletRepository.update(toWallet.id, toWallet);
+
+        transaction.status = 'COMPLETE';
+        this.ws.emit('update_transaction', transaction);
+        this.transactionRepository.update(transaction.id, transaction, tx);
       }
-      //);
     } catch (err) {
       Logger.log(err);
     }

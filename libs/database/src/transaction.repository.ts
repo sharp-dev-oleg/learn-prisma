@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { Prisma, Wallet, Transaction } from '@prisma/client';
+import { Prisma, Wallet, Transaction, PrismaClient } from '@prisma/client';
 import * as moment from 'moment/moment';
+import { BaseRepository } from '@app/database/baseRepository';
 
 export type NewTransactionType = Pick<
   Transaction,
@@ -9,14 +10,13 @@ export type NewTransactionType = Pick<
 >;
 
 @Injectable()
-export class TransactionRepository {
-  private transactionClient: Prisma.TransactionDelegate;
-  constructor(private prisma: PrismaService) {
-    this.transactionClient = this.prisma.transaction;
+export class TransactionRepository extends BaseRepository<Prisma.TransactionDelegate> {
+  constructor(prisma: PrismaService) {
+    super(prisma, 'transaction');
   }
 
-  findAllTransactions(walletIds: Wallet['id'][]) {
-    return this.transactionClient.findMany({
+  findAllTransactions(walletIds: Wallet['id'][], tx?: PrismaClient) {
+    return this.getClient(tx).findMany({
       where: {
         OR: [
           { fromWalletId: { in: walletIds } },
@@ -26,16 +26,16 @@ export class TransactionRepository {
     });
   }
 
-  findNew() {
-    return this.transactionClient.findMany({
+  findNew(tx?: PrismaClient) {
+    return this.getClient(tx).findMany({
       where: {
         status: 'NEW',
       },
     });
   }
 
-  create(newTransaction: NewTransactionType) {
-    return this.transactionClient.create({
+  create(newTransaction: NewTransactionType, tx?: PrismaClient) {
+    return this.getClient(tx).create({
       data: {
         ...newTransaction,
         status: 'NEW',
@@ -46,8 +46,12 @@ export class TransactionRepository {
     });
   }
 
-  update(id: Transaction['id'], transaction: Prisma.TransactionUpdateInput) {
-    return this.transactionClient.update({
+  update(
+    id: Transaction['id'],
+    transaction: Prisma.TransactionUpdateInput,
+    tx?: PrismaClient,
+  ) {
+    return this.getClient(tx).update({
       data: transaction,
       where: {
         id,
