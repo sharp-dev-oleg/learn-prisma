@@ -19,12 +19,12 @@ export class PWController {
   }
 
   @MessagePattern({ role: 'PW', cmd: 'wallets' })
-  getWallets(userId) {
+  getWallets(userId: number) {
     return this.service.getWallets(userId);
   }
 
   @MessagePattern({ role: 'PW', cmd: 'wallet' })
-  getWallet(id) {
+  getWallet(id: number) {
     return this.service.getWallet(id);
   }
 }

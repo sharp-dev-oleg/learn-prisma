@@ -21,9 +21,9 @@ export class PWController {
 
   @UseGuards(AuthGuard)
   @Get('/wallets/:userId')
-  async wallets(@Param('userId') userId) {
+  async wallets(@Param('userId') userId: string) {
     Logger.log('GET - wallets: userId');
-    return await this.service.getWallets(userId);
+    return await this.service.getWallets(Number(userId));
   }
 
   getUser(req: any) {

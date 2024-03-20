@@ -21,7 +21,7 @@ export class PwService {
     );
   }
 
-  async getWallets(userId) {
+  async getWallets(userId: number) {
     return firstValueFrom(
       this.client
         .send({ role: 'PW', cmd: 'wallets' }, userId)
@@ -29,7 +29,7 @@ export class PwService {
     );
   }
 
-  async getWallet(id) {
+  async getWallet(id: number) {
     return firstValueFrom(
       this.client
         .send({ role: 'PW', cmd: 'wallet' }, id)
