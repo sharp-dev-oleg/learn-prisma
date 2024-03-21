@@ -60,7 +60,7 @@ describe('app (e2e)', () => {
   it('/users (POST)', () => {
     const registerDate = { username: 'fresh', password: '123' };
     jest
-      .spyOn(authService, 'registration')
+      .spyOn(userService, 'create')
       .mockImplementation(() => of({ id: 1, username: 'fresh' }));
     return request(app.getHttpServer())
       .post('/users')
@@ -85,11 +85,14 @@ describe('app (e2e)', () => {
   it('/api/protected/user-info (GET)', () => {
     const token = 'token';
     jest.spyOn(authClient, 'send').mockImplementation(() => of(true));
-    jest
-      .spyOn(authService, 'getUserData')
-      .mockImplementation(() =>
-        Promise.resolve({ id: 1, username: 'test', exp: 123456 }),
-      );
+    jest.spyOn(authService, 'getUserData').mockImplementation(() =>
+      Promise.resolve({
+        id: 1,
+        username: 'test',
+        email: 'test@test.ru',
+        password: '1',
+      }),
+    );
     return request(app.getHttpServer())
       .get('/api/protected/user-info')
       .set('Accept', 'application/json')

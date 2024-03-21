@@ -22,8 +22,6 @@ export class UserController {
   @Post('/api/protected/users/list')
   search(@Query('q') q) {
     Logger.log(`UserController:search`, { q });
-    return this.service.search(q).subscribe((test) => {
-      console.log('test', test);
-    });
+    return this.service.search(q);
   }
 }
