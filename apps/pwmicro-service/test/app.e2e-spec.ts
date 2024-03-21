@@ -92,50 +92,48 @@ describe('AppController (e2e)', () => {
     saveMock.mockClear();
   });
 
-  it('should not complete money transfer', async (done) => {
-    jest.spyOn(transactionRepo.manager, 'find').mockImplementation(() =>
-      Promise.resolve([
-        {
-          id: 1,
-          fromWalletId: 1,
-          toWalletId: 2,
-          status: 'NEW',
-          amount: 5,
-        },
-      ]),
-    );
+  it('should not complete money transfer', async () => {
+    const transaction = {
+      id: 1,
+      fromWalletId: 1,
+      toWalletId: 2,
+      status: 'NEW',
+      amount: 5,
+      date: new Date(),
+      fromBalance: 0,
+      toBalance: 0,
+    };
+    const walletFrom = {
+      id: transaction.fromWalletId,
+      name: `test${transaction.fromWalletId}`,
+      userId: transaction.fromWalletId,
+      balance: 0,
+    };
+    const walletTo = {
+      id: transaction.toWalletId,
+      name: `test${transaction.toWalletId}`,
+      userId: transaction.toWalletId,
+      balance: 0,
+    };
 
-    jest.spyOn(walletRepo, 'findOne').mockImplementation(
-      (req): Promise<Wallet> =>
-        Promise.resolve({
-          id: parseInt(req.id.toString()),
-          name: `test${req.id}`,
-          userId: parseInt(req.id.toString()),
-          balance: 0,
-        }),
-    );
+    jest.spyOn(transactionRepo, 'findNew').mockResolvedValueOnce([transaction]);
+
     jest
-      .spyOn(walletRepo.manager, 'save')
-      .mockImplementation((wallet) => Promise.resolve(wallet));
+      .spyOn(walletRepo, 'getById')
+      .mockResolvedValueOnce(walletFrom)
+      .mockResolvedValueOnce(walletTo);
+
+    jest
+      .spyOn(walletRepo, 'update')
+      .mockResolvedValueOnce(walletFrom)
+      .mockResolvedValueOnce(walletTo);
 
     const saveMock = jest
-      .spyOn(transactionRepo.manager, 'save')
-      .mockImplementation((t: any) => Promise.resolve(t));
-    jest
-      .spyOn(transactionRepo.manager, 'transaction')
-      .mockImplementation((callback: any) =>
-        Promise.resolve(callback(transactionRepo.manager)),
-      );
-    jest
-      .spyOn(walletRepo.manager, 'transaction')
-      .mockImplementation((callback: any) =>
-        Promise.resolve(callback(walletRepo.manager)),
-      );
+      .spyOn(transactionRepo, 'update')
+      .mockResolvedValue(transaction);
     await pwService.process();
-    console.log(saveMock.mock.calls);
     expect(saveMock.mock.calls.length).toBe(2);
-    expect((saveMock.mock.calls[0][0] as any).status).toBe('FAILED');
+    expect(saveMock.mock.calls[1][1].status).toBe('FAILED');
     saveMock.mockClear();
-    done();
   });
 });
