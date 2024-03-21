@@ -1,16 +1,18 @@
 import { Transport } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { PWModule } from '../src/pw.module';
 import { PWService } from '../src/pw.service';
 import { WalletRepository } from '@app/database/wallet.repository';
 import { TransactionRepository } from '@app/database/transaction.repository';
+import { PrismaService } from '@app/database';
 
 describe('AppController (e2e)', () => {
   let app;
+  let prismaService: PrismaService;
   let pwService: PWService;
   let walletRepo: WalletRepository;
   let transactionRepo: TransactionRepository;
+  let prismaTransactionSpy;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -25,15 +27,15 @@ describe('AppController (e2e)', () => {
       },
     });
 
+    prismaService = moduleFixture.get<PrismaService>(PrismaService);
     pwService = moduleFixture.get<PWService>(PWService);
-    walletRepo = moduleFixture.get<WalletRepository>(
-      getRepositoryToken(Wallet),
-    );
+    walletRepo = moduleFixture.get<WalletRepository>(WalletRepository);
     transactionRepo = moduleFixture.get<TransactionRepository>(
-      getRepositoryToken(Transaction),
+      TransactionRepository,
     );
-
-    await app.init();
+    prismaTransactionSpy = jest
+      .spyOn(prismaService, 'startTransaction')
+      .mockImplementation((callback) => callback(prismaService));
   });
 
   afterAll(async () => {
@@ -44,51 +46,50 @@ describe('AppController (e2e)', () => {
     expect(pwService).toBeDefined();
   });
 
-  it('should complete money transfer', async (done) => {
-    jest.spyOn(transactionRepo.manager, 'find').mockImplementation(() =>
-      Promise.resolve([
-        {
-          id: 1,
-          fromWalletId: 1,
-          toWalletId: 2,
-          status: 'NEW',
-          amount: 5,
-        },
-      ]),
-    );
+  it('should complete money transfer', async () => {
+    const transaction = {
+      id: 1,
+      fromWalletId: 1,
+      toWalletId: 2,
+      status: 'NEW',
+      amount: 5,
+      date: new Date(),
+      fromBalance: 0,
+      toBalance: 0,
+    };
+    const walletFrom = {
+      id: transaction.fromWalletId,
+      name: `test${transaction.fromWalletId}`,
+      userId: transaction.fromWalletId,
+      balance: 10,
+    };
+    const walletTo = {
+      id: transaction.toWalletId,
+      name: `test${transaction.toWalletId}`,
+      userId: transaction.toWalletId,
+      balance: 10,
+    };
 
-    jest.spyOn(walletRepo, 'findOne').mockImplementation(
-      (req): Promise<Wallet> =>
-        Promise.resolve({
-          id: parseInt(req.id.toString()),
-          name: `test${req.id}`,
-          userId: parseInt(req.id.toString()),
-          balance: 10,
-        }),
-    );
+    jest.spyOn(transactionRepo, 'findNew').mockResolvedValueOnce([transaction]);
+
     jest
-      .spyOn(walletRepo.manager, 'save')
-      .mockImplementation((wallet) => Promise.resolve(wallet));
+      .spyOn(walletRepo, 'getById')
+      .mockResolvedValueOnce(walletFrom)
+      .mockResolvedValueOnce(walletTo);
+
+    jest
+      .spyOn(walletRepo, 'update')
+      .mockResolvedValueOnce(walletFrom)
+      .mockResolvedValueOnce(walletTo);
 
     const saveMock = jest
-      .spyOn(transactionRepo.manager, 'save')
-      .mockImplementation((t) => Promise.resolve(t));
-    jest
-      .spyOn(transactionRepo.manager, 'transaction')
-      .mockImplementation((callback: any) =>
-        Promise.resolve(callback(transactionRepo.manager)),
-      );
-    jest
-      .spyOn(walletRepo.manager, 'transaction')
-      .mockImplementation((callback: any) =>
-        Promise.resolve(callback(walletRepo.manager)),
-      );
+      .spyOn(transactionRepo, 'update')
+      .mockResolvedValue(transaction);
     await pwService.process();
-    console.log(saveMock.mock.calls[1]);
-    expect(saveMock.mock.calls.length).toBe(4);
-    expect((saveMock.mock.calls[0][0] as any).status).toBe('COMPLETE');
+    expect(prismaTransactionSpy.mock.calls.length).toBe(1);
+    expect(saveMock.mock.calls.length).toBe(2);
+    expect(saveMock.mock.calls[1][1].status).toBe('COMPLETE');
     saveMock.mockClear();
-    done();
   });
 
   it('should not complete money transfer', async (done) => {

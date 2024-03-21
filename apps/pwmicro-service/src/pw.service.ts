@@ -51,9 +51,9 @@ export class PWService {
   @Cron(CronExpression.EVERY_MINUTE)
   async process() {
     const transactions = await this.transactionRepository.findNew();
-    console.log('Pending Transactions', transactions);
+    Logger.log('Pending Transactions', transactions);
     for (const transaction of transactions) {
-      this.prismaService.startTransaction(async (tx) => {
+      await this.prismaService.startTransaction(async (tx) => {
         await this.processOneTransaction(transaction, tx);
       });
     }
