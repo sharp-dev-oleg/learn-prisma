@@ -11,6 +11,7 @@ import { tap } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { getClientPipeOperatorsWithTap } from '@app/utils/pipe';
 import type { User } from '@prisma/client';
+import type { AuthUser } from '@app/types/user';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
     private readonly authClient: ClientProxy,
   ) {}
 
-  login(data) {
+  login(data: AuthUser) {
     Logger.log('AuthSerive:login', data);
     return this.authClient.send({ role: 'auth', cmd: 'signin' }, data).pipe(
       ...getClientPipeOperatorsWithTap(

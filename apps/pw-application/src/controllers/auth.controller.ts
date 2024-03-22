@@ -8,13 +8,14 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { AuthGuard } from '../guards/auth.guard';
+import type { AuthUser } from '@app/types/user';
 
 @Controller()
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
   @Post('/sessions/create')
-  login(@Body() user) {
+  login(@Body() user: AuthUser) {
     return this.service.login(user);
   }
 
