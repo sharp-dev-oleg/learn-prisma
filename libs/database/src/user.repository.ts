@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { Prisma, User } from '@prisma/client';
+import { PublicUser } from '@app/types/user';
 
 @Injectable()
 export class UserRepository {
@@ -17,7 +18,19 @@ export class UserRepository {
     });
   }
 
-  async getByUsername(username: User['username']): Promise<User> {
+  async getByUsername(username: User['username']): Promise<PublicUser> {
+    return this.userClient.findFirst({
+      select: {
+        id: true,
+        username: true,
+      },
+      where: {
+        username,
+      },
+    });
+  }
+
+  async getByUsernameWithPassword(username: User['username']): Promise<User> {
     return this.userClient.findFirst({
       where: {
         username,
@@ -25,8 +38,12 @@ export class UserRepository {
     });
   }
 
-  async findByUsername(username: User['username']): Promise<User[]> {
+  async findByUsername(username: User['username']): Promise<PublicUser[]> {
     return this.userClient.findMany({
+      select: {
+        id: true,
+        username: true,
+      },
       where: {
         username: {
           contains: username,

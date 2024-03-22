@@ -9,9 +9,21 @@ export class UserController {
   @MessagePattern({ role: 'user', cmd: 'get' })
   async getByUserName(data: string) {
     try {
-      Logger.log('UserController:getByUserName');
+      Logger.log('UserController:getByUserName', data);
       Logger.log(data);
       const resultUser = await this.service.getByUsername(data);
+      Logger.log(resultUser);
+      return resultUser;
+    } catch (e) {
+      Logger.log(e);
+    }
+  }
+
+  @MessagePattern({ role: 'user', cmd: 'getWithPassword' })
+  async getByUserNameWithPassword(data: string) {
+    try {
+      Logger.log('UserController:getByUserNameWithPassword', data);
+      const resultUser = await this.service.getByUsernameWithPassword(data);
       Logger.log(resultUser);
       return resultUser;
     } catch (e) {

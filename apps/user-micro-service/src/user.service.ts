@@ -25,9 +25,8 @@ export class UserService {
 
   async search(query: string): Promise<PublicUser[]> {
     console.log('search', query);
-    const result = await this.userRepository.findByUsername(query);
 
-    return result.map(({ id, username }) => ({ id, username }));
+    return this.userRepository.findByUsername(query);
   }
 
   async create(userData: User): Promise<PublicUser> {
@@ -61,8 +60,13 @@ export class UserService {
     }
   }
 
-  getByUsername(username: string): Promise<User> {
+  getByUsername(username: string): Promise<PublicUser> {
     Logger.log('getByUsername', username);
     return this.userRepository.getByUsername(username);
+  }
+
+  getByUsernameWithPassword(username: string): Promise<User> {
+    Logger.log('getByUsernameWithPassword', username);
+    return this.userRepository.getByUsernameWithPassword(username);
   }
 }

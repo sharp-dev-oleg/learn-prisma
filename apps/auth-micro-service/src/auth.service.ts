@@ -18,7 +18,7 @@ export class AuthService {
     try {
       const user = await firstValueFrom(
         this.client
-          .send<User>({ role: 'user', cmd: 'get' }, username)
+          .send<User>({ role: 'user', cmd: 'getWithPassword' }, username)
           .pipe(...getClientPipeOperators()),
       );
 
