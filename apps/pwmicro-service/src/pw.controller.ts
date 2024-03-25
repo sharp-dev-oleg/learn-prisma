@@ -1,14 +1,14 @@
 import { Controller, Logger } from '@nestjs/common';
 import { PWService } from './pw.service';
 import { MessagePattern } from '@nestjs/microservices';
-import type { Transaction } from '@prisma/client';
+import type { Transaction, User } from '@prisma/client';
 
 @Controller()
 export class PWController {
   constructor(private readonly service: PWService) {}
 
   @MessagePattern({ role: 'PW', cmd: 'recent' })
-  getTransactions(userId) {
+  getRecentTransactions(userId: User['id']) {
     return this.service.getTransactions(userId);
   }
 

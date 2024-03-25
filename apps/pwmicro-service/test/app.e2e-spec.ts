@@ -1,13 +1,16 @@
 import { Transport } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PWModule } from '../src/pw.module';
-import { PWService } from '../src/pw.service';
 import { WalletRepository } from '@app/database/wallet.repository';
 import { TransactionRepository } from '@app/database/transaction.repository';
 import { PrismaService } from '@app/database';
+import { INestMicroservice } from '@nestjs/common';
 
-describe('AppController (e2e)', () => {
-  let app;
+import { PWModule } from '../src/pw.module';
+import { PWController } from '../src/pw.controller';
+import { PWService } from '../src/pw.service';
+
+describe('PWMicroService', () => {
+  let app: INestMicroservice;
   let prismaService: PrismaService;
   let pwService: PWService;
   let walletRepo: WalletRepository;
@@ -135,5 +138,46 @@ describe('AppController (e2e)', () => {
     expect(saveMock.mock.calls.length).toBe(2);
     expect(saveMock.mock.calls[1][1].status).toBe('FAILED');
     saveMock.mockClear();
+  });
+
+  describe('Controller', () => {
+    let pwController: PWController;
+
+    beforeEach(async () => {
+      pwController = app.get<PWController>(PWController);
+    });
+
+    it('should return recent transactions', async () => {
+      const transaction = {
+        id: 1,
+        fromWalletId: 1,
+        fromWallet: {
+          user: {
+            id: 1,
+            username: 'user1',
+          },
+        },
+        toWalletId: 2,
+        toWallet: {
+          user: {
+            id: 2,
+            username: 'user2',
+          },
+        },
+        status: 'NEW',
+        amount: 5,
+        date: new Date(),
+        fromBalance: 0,
+        toBalance: 0,
+      };
+      jest
+        .spyOn(transactionRepo, 'findAllTransactions')
+        .mockResolvedValueOnce([transaction]);
+
+      const transactions = await pwController.getRecentTransactions(1);
+      expect(transactions).toHaveLength(1);
+      expect(transactions[0].fromWallet.user.id).toEqual(expect.any(Number));
+      expect(transactions[0].toWallet.user.id).toEqual(expect.any(Number));
+    });
   });
 });
