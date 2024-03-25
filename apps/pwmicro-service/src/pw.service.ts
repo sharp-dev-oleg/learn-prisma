@@ -26,6 +26,10 @@ export class PWService {
     });
   }
 
+  async onApplicationShutdown() {
+    await this.ws.close();
+  }
+
   async getTransactions(userId: Wallet['userId']) {
     const walletIds = (await this.walletRepository.findByUserId(userId)).map(
       (s) => s.id,
