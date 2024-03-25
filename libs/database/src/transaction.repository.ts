@@ -16,7 +16,21 @@ export class TransactionRepository extends BaseRepository<Prisma.TransactionDele
   }
 
   findAllTransactions(walletIds: Wallet['id'][], tx?: PrismaClient) {
+    const includeWallet = {
+      select: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    };
     return this.getClient(tx).findMany({
+      include: {
+        toWallet: includeWallet,
+        fromWallet: includeWallet,
+      },
       where: {
         OR: [
           { fromWalletId: { in: walletIds } },
