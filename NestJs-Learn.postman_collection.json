@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\":\"freshekt\",\n\t\"password\":\"30122784\",\n    \"email\": \"test@test.ru\"\n}",
+					"raw": "{\n\t\"username\":\"test3\",\n\t\"password\":\"3\",\n    \"email\": \"test@test5.ru\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -48,12 +48,9 @@
 					}
 				},
 				"url": {
-					"raw": "192.168.1.65:3000/sessions/create",
+					"raw": "localhost:3000/sessions/create",
 					"host": [
-						"192",
-						"168",
-						"1",
-						"65"
+						"localhost"
 					],
 					"port": "3000",
 					"path": [
@@ -66,19 +63,70 @@
 		},
 		{
 			"name": "/api/protected/transactions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6ImZyZXNoZWt0IiwicGFzc3dvcmQiOiIkMmIkMTAkNzJQTGFXOTJ4WjBUbnA1L2ZDa29VdW9MUElNL2g5R0phVXNkdFVoLjhRT2d0SGVDV0taeUcifSwic3ViIjoxLCJpYXQiOjE1OTU4NjYyNjUsImV4cCI6MTU5NTkwMjI2NX0.9IiofqbaHfw_oRQ9UH3iLW-mETaiP4OLmNoGhRz5a1w",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
 				},
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/protected/transactions",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"protected",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/protected/transactions (New transaction)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fromWalletId\": 1,\n    \"toWalletId\": 2,\n    \"amount\": 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "localhost:3000/api/protected/transactions",
 					"host": [
@@ -121,14 +169,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/wallets/1",
+					"raw": "localhost:3000/wallets/2",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"wallets",
-						"1"
+						"2"
 					]
 				}
 			},
@@ -142,7 +190,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6ImZyZXNoZWt0IiwicGFzc3dvcmQiOiIkMmIkMTAkN3dvajI5ZklDUEJ2RHdIZUNRRWJIT3pKZXZaaUQ3ZmNlbndyNXBqaTllcmUvRy5YVU5vUy4ifSwic3ViIjoxLCJpYXQiOjE1OTA2NTU3NjcsImV4cCI6MTU5MDcxNTc2N30.ffImfkIiTL0O4RbmZGn3In5lbnZsGMQiq2Q6MG7AXzQ",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -200,6 +248,12 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
 		}
 	]
 }
