@@ -47,6 +47,11 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Swagger
+
+[Open](http://localhost:3000/api)
+
+
 ## Test
 
 ```bash
