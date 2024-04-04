@@ -52,4 +52,19 @@ describe('AppController (e2e)', () => {
     expect(userdata).toEqual([user]);
     expect(findSpy).toBeCalledWith('test');
   });
+
+  it('should return user data by username', async () => {
+    const user = {
+      id: 1,
+      username: 'test',
+    };
+
+    const findSpy = jest
+      .spyOn(userRepo, 'getByUsername')
+      .mockResolvedValueOnce(user);
+    const userdata = await userController.getByUserName('test');
+
+    expect(userdata).toEqual(user);
+    expect(findSpy).toBeCalledWith('test');
+  });
 });
